@@ -1,0 +1,56 @@
+.patient-report-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    
+    h2 {
+      color: #3f51b5;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    
+    .form-row {
+      margin-bottom: 16px;
+      
+      mat-form-field {
+        width: 100%;
+      }
+    }
+    
+    .form-section {
+      margin-bottom: 24px;
+      
+      h3 {
+        color: #555;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+    }
+    
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      
+      mat-checkbox {
+        display: block;
+      }
+    }
+    
+    .dimensions-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .button-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 24px;
+    }
+  }

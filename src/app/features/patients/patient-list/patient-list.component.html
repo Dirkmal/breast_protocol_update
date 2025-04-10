@@ -1,0 +1,97 @@
+
+<div class="patient-list-container">
+  <div class="header-container">
+    <h1>Patients</h1>
+    <button mat-raised-button color="primary" (click)="openPatientForm()">
+      <mat-icon>add</mat-icon>
+      Register New Patient
+    </button>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div class="filter-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search patients">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      @if (loading) {
+        <div class="loading-container">
+          <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+        </div>
+      }
+      
+
+      <div class="mat-elevation-z8 table-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <!-- Hospital Number Column -->
+          <ng-container matColumnDef="hospitalNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Hospital Number </th>
+            <td mat-cell *matCellDef="let patient"> {{patient.hospitalNumber}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let patient"> {{patient.firstName}} {{patient.lastName}} </td>
+          </ng-container>
+
+          <!-- Date of Birth Column -->
+          <ng-container matColumnDef="dateOfBirth">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Age / DOB </th>
+            <td mat-cell *matCellDef="let patient"> 
+              {{getAge(patient.dateOfBirth)}} yrs / {{patient.dateOfBirth | date:'mediumDate'}} 
+            </td>
+          </ng-container>
+
+          <!-- Gender Column -->
+          <ng-container matColumnDef="gender">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+            <td mat-cell *matCellDef="let patient"> {{patient.gender | titlecase}} </td>
+          </ng-container>
+
+          <!-- Contact Number Column -->
+          <ng-container matColumnDef="contactNumber">
+            <th mat-header-cell *matHeaderCellDef> Contact Number </th>
+            <td mat-cell *matCellDef="let patient"> {{patient.contactNumber}} </td>
+          </ng-container>
+
+          <!-- Reg Date Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef> Registered On </th>
+            <td mat-cell *matCellDef="let patient"> {{patient.createdAt}} </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let patient">
+              <button mat-icon-button color="primary" (click)="openPatientForm(patient)" matTooltip="Edit Patient">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" (click)="viewReports(patient.id!)" matTooltip="View Reports">
+                <mat-icon>description</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" (click)="createReport(patient.id!)" matTooltip="Create Report">
+                <mat-icon>add_comment</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no matching data -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="6">No data matching the filter</td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

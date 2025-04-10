@@ -1,0 +1,142 @@
+<div class="patient-report-container">
+    <h2>New Report</h2>
+    
+    <mat-horizontal-stepper [linear]="true" #stepper [selectedIndex]="currentStep">
+      <!-- Step 1: Patient Details -->
+      <mat-step [completed]="detailsForm.valid">
+        <ng-template matStepLabel>Patient Details</ng-template>
+        <form [formGroup]="detailsForm">
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Patient Number</mat-label>
+              <input type="text" matInput formControlName="hospitalNumber" (input)="filterPatients($event)">
+              <!-- <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let patient of filteredPatients" [value]="patient.id">
+                  {{ patient.id }} - {{ patient.name }}
+                </mat-option>
+              </mat-autocomplete>  -->
+                @if (detailsForm.controls['hospitalNumber'].errors?.['required']) {
+                    <mat-error>Hospital Number is required</mat-error>
+                }              
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Referring Clinician</mat-label>
+              <mat-select formControlName="referringClinician">
+                @for (clinician of clinicians; track clinician.id) {
+                    <mat-option [value]="clinician">{{ clinician.name }}</mat-option>
+                }
+              </mat-select>
+                @if (detailsForm.controls['referringClinician'].errors?.['required']) {
+                    <mat-error>Referring clinician is required</mat-error>
+                }
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Reporting</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="reportingDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+                @if (detailsForm.controls['reportingDate'].errors?.['required']) {
+                    <mat-error>Date of reporting is required</mat-error>
+                }              
+            </mat-form-field>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Side</mat-label>
+              <mat-select formControlName="side">
+                @for (side of sides; track side) {
+                    <mat-option [value]="side">{{ side }}</mat-option>
+                }
+              </mat-select>
+              @if (detailsForm.controls['side'].errors?.['required']) {
+                    <mat-error>Side is required</mat-error>
+                }
+            </mat-form-field>
+          </div>
+        </form>
+        
+        <div class="button-row">
+          <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </div>
+      </mat-step>
+      
+      <!-- Step 2: Macroscopy -->
+      <mat-step [completed]="macroscopyForm.valid">
+        <ng-template matStepLabel>Macroscopy</ng-template>
+        <form [formGroup]="macroscopyForm">
+          <div class="form-section">
+            <h3>Specimen Type</h3>
+            <div class="checkbox-group" formArrayName="specimenTypes">
+                @for (stype of specimenTypes; track stype) {
+                    <mat-checkbox [value]="stype">{{ stype }}</mat-checkbox>
+                }
+            </div>
+          </div>
+          
+          <div class="form-section" formGroupName="dimensions">
+            <h3>Specimen Dimensions (mm)</h3>
+            <div class="dimensions-container">
+              <mat-form-field appearance="outline">
+                <mat-label>Length (x)</mat-label>
+                <input type="number" matInput formControlName="x">
+                @if (macroscopyForm.controls['dimensions.x'].errors?.['required']) {
+                    <mat-error>Length is required</mat-error>
+                }
+                @if (macroscopyForm.controls['x'].errors?.['min']) {
+                    <mat-error>Value must be positive</mat-error>
+                }
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Width (y)</mat-label>
+                <input type="number" matInput formControlName="y">
+                @if (detailsForm.controls['y'].errors?.['required']) {
+                    <mat-error>Width is required</mat-error>
+                }
+                @if (detailsForm.controls['dimensions.y'].errors?.['min']) {
+                    <mat-error>Value must be positive</mat-error>
+                }
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Height (z)</mat-label>
+                <input type="number" matInput formControlName="z">
+                @if (detailsForm.controls['dimensions.z'].errors?.['required']) {
+                    <mat-error>Height is required</mat-error>
+                }
+                @if (detailsForm.controls['dimensions.z'].errors?.['min']) {
+                    <mat-error>Value must be positive</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+          
+          <div class="form-section">
+            <h3>Specimen Weight (g)</h3>
+            <mat-form-field appearance="outline">
+              <mat-label>Weight</mat-label>
+              <input type="number" matInput formControlName="weight">
+                @if (detailsForm.controls['weight'].errors?.['required']) {
+                    <mat-error>Weight is required</mat-error>
+                }
+                @if (detailsForm.controls['weight'].errors?.['min']) {
+                    <mat-error>Value must be positive</mat-error>
+                }
+            </mat-form-field>
+          </div>
+        </form>
+        
+        <div class="button-row">
+          <button mat-button (click)="previousStep()">Back</button>
+          <button mat-raised-button color="primary" (click)="submitReport()">Submit</button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>

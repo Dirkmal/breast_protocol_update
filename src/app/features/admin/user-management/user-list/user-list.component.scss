@@ -1,0 +1,64 @@
+
+.user-list-container {
+    padding: 20px;
+  }
+  
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .filter-container {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    
+    .mat-form-field {
+      width: 100%;
+    }
+  }
+  
+  .table-container {
+    position: relative;
+    min-height: 400px;
+    overflow: auto;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+  }
+  
+  .role-admin {
+    color: #f44336;
+    font-weight: 500;
+  }
+  
+  .role-doctor {
+    color: #2196f3;
+    font-weight: 500;
+  }
+  
+  .role-nurse {
+    color: #4caf50;
+    font-weight: 500;
+  }
+  
+  .role-staff {
+    color: #ff9800;
+    font-weight: 500;
+  }
