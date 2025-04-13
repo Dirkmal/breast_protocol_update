@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { User } from '../../../core/models/user.model';
 import { MaterialModule } from '../../material.module';
-import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-header',
