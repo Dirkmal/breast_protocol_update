@@ -57,87 +57,117 @@
         </form>
         
         <div class="button-row">
+          <button mat-button (click)="previousStep()">Back</button>
           <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
         </div>
       </mat-step>
 
       <!-- Step 3: Microscopy -->
-      <mat-step [completed]="microscopyForm.valid">
-        <ng-template matStepLabel>Microscopy</ng-template>
+      <mat-step>
         <form [formGroup]="microscopyForm">
+          <ng-template matStepLabel>Microscopy</ng-template>   
+
           <div class="form-section">
-            <h3>In-situ Carcinoma</h3>
-            <div class="dimensions-container">
-              <mat-form-field appearance="outline">
-                <mat-label>Dual Carcinoma In-situ (DCIS) size</mat-label>
-                <input type="number" matInput formControlName="dcis">
-                @if (microscopyForm.controls['dcis'].errors?.['required']) {
-                    <mat-error>DCIS size is required</mat-error>
-                }
-                @if (microscopyForm.controls['dcis'].errors?.['min']) {
-                    <mat-error>Value must be positive</mat-error>
-                }
-              </mat-form-field>
-
-              <div class="checkbox-group" formArrayName="in_situ_carcinoma">
-                @for (ic of in_situ_carcinoma_options; track ic) {
-                  <mat-checkbox [value]="ic">{{ ic | titlecase }}</mat-checkbox>
-                }
-              </div>
-
-              <mat-checkbox>Microinvasion Present</mat-checkbox>
-              
-              <mat-checkbox>Invasive Carcinoma Present</mat-checkbox>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Invasive tumor size (mm)</mat-label>
-                <input type="number" matInput formControlName="invasive_tumor_size">            
-                @if (microscopyForm.controls['invasive_tumor_size'].errors?.['min']) {
-                    <mat-error>Value must be positive</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Whole size tumor (mm)</mat-label>
-                <input type="number" matInput formControlName="whole_tumor_size">            
-                @if (microscopyForm.controls['whole_tumor_size'].errors?.['min']) {
-                  <mat-error>Value must be positive</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Invasive Carcinoma Type</mat-label>
-                <mat-select formControlName="invasive_carcinoma_type">
-                  @for (ic_type of invasive_carcinoma_options; track ic_type) {
-                    <mat-option [value]="ic_type">{{ ic_type }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Invasive Grade</mat-label>
-                <mat-select formControlName="invasive_carcinoma_type">
-                  @for (ig of invasive_grades_options; track ig) {
-                    <mat-option [value]="ig">{{ ig }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Tumor Extent</mat-label>
-                <mat-select formControlName="invasive_carcinoma_type">
-                  @for (ig of invasive_grades_options; track ig) {
-                    <mat-option [value]="ig">{{ ig }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
+            <h3>In Situ Carcinoma</h3>
+            <div class="dimensions-container-4">
+              @for (isc of in_situ_carcinoma_controls; track isc) {
+                <app-dynamic-form-control [control]="isc" [form]="in_situSF">
+                </app-dynamic-form-control>
+              }
             </div>
           </div>
-        </form>
 
+          <div class="form-section">
+            <h3>Invasive Carcinoma</h3>
+            <div class="dimensions-container-4">
+              @for (icc of invasive_carcinoma_controls; track icc) {
+                <app-dynamic-form-control [control]="icc" [form]="invasive_carcinomaSF">
+                </app-dynamic-form-control>
+              }
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Axillary Node</h3>
+              <div class="dimensions-container-4">
+                @for (ap of axillary_procedure_controls; track ap) {
+                  <app-dynamic-form-control [control]="ap" [form]="axillary_proSF">
+                  </app-dynamic-form-control>
+                }
+              </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Margins</h3>
+              <div class="dimensions-container-4">
+                @for (mg of margin_controls; track mg) {
+                  <app-dynamic-form-control [control]="mg" [form]="marginSF">
+                  </app-dynamic-form-control>
+                }
+              </div>
+          </div>
+
+          <div class="form-section">
+            <h3></h3>
+              <div class="dimensions-container-4">
+                @for (smg of surgical_margin_controls; track smg) {
+                  <app-dynamic-form-control [control]="smg" [form]="surgical_marginSF">
+                  </app-dynamic-form-control>
+                }
+              </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Pathological Staging</h3>
+              <div class="dimensions-container-4">
+                @for (ps of pathological_staging_controls; track ps) {
+                  <app-dynamic-form-control [control]="ps" [form]="pathological_stagingSF">
+                  </app-dynamic-form-control>
+                }
+              </div>
+          </div>
+        </form>
+        
         <div class="button-row">
           <button mat-button (click)="previousStep()">Back</button>
           <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </div>
+      </mat-step>
+
+      <!-- Step 4: Immuno -->
+      <mat-step>
+        <form [formGroup]="ihcForm">
+          <ng-template matStepLabel>Immunohistochemistry</ng-template>   
+
+          @for (ihc of ihc_controls; track ihc) {
+            <div class="form-row">
+              <app-dynamic-form-control [control]="ihc" [form]="ihcForm">
+              </app-dynamic-form-control>
+            </div>
+          }
+        </form>
+      
+        <div class="button-row">
+          <button mat-button (click)="previousStep()">Back</button>
+          <button mat-raised-button color="primary" (click)="nextStep()">Next</button>
+        </div>
+      </mat-step>
+
+      <!-- Step 4: Patho Report -->
+      <mat-step>
+        <form [formGroup]="pathologistForm">
+          <ng-template matStepLabel>Pathologist Report</ng-template>   
+
+          @for (pr of pathologist_report_controls; track pr) {
+            <div class="form-row">
+              <app-dynamic-form-control [control]="pr" [form]="pathologistForm">
+              </app-dynamic-form-control>
+            </div>
+          }
+        </form>
+      
+        <div class="button-row">
+          <button mat-button (click)="previousStep()">Back</button>
           <button mat-raised-button color="primary" (click)="submitReport()">Submit</button>
         </div>
       </mat-step>

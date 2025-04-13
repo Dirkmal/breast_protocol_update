@@ -48,7 +48,7 @@
   
     <!-- Select -->
     <mat-form-field *ngSwitchCase="'select'" appearance="outline" >
-      <mat-label>{{ control.label }}</mat-label>
+      <mat-label>{{ control.label | titlecase }}</mat-label>
       <mat-select [formControl]="formControl" [name]="control.name">
         <mat-option
           *ngFor="let option of control.options"
