@@ -1,0 +1,76 @@
+<ng-container [ngSwitch]="control.controlType">
+    <!-- Input -->
+   <mat-form-field *ngSwitchCase="'input'" appearance="outline" >
+      <mat-label>{{ control.label | titlecase }}</mat-label>
+      <input
+        matInput
+        [formControl]="formControl"        
+        [type]="control.type"       
+      />
+              
+      @if (showError) {
+        <mat-error>{{ getErrorMessage() }}</mat-error>
+      }      
+    </mat-form-field>
+
+     <!-- Date Input with Date Picker -->
+   <mat-form-field *ngSwitchCase="'date'" appearance="outline" >
+    <mat-label>{{ control.label | titlecase }}</mat-label>
+    <input
+      matInput
+      [formControl]="formControl"        
+      [type]="control.type"
+      [matDatepicker]="picker"        
+    />
+   
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+             
+    @if (showError) {
+      <mat-error>{{ getErrorMessage() }}</mat-error>
+    }      
+  </mat-form-field>
+  
+    <!-- Textarea -->
+    <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" >
+      <mat-label>{{ control.label | titlecase }}</mat-label>
+      <textarea
+        matInput
+        [formControl]="formControl"
+        [placeholder]="control.placeholder"
+        [name]="control.name"
+        rows="4"
+      ></textarea>
+      @if (showError) {
+        <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+  
+    <!-- Select -->
+    <mat-form-field *ngSwitchCase="'select'" appearance="outline" >
+      <mat-label>{{ control.label }}</mat-label>
+      <mat-select [formControl]="formControl" [name]="control.name">
+        <mat-option
+          *ngFor="let option of control.options"
+          [value]="option"
+        >
+          {{ option | titlecase }}
+        </mat-option>
+      </mat-select>
+      @if (showError) {
+        <mat-error>{{ getErrorMessage() }}</mat-error>
+      }
+    </mat-form-field>
+  
+    <!-- Checkbox -->
+    <mat-checkbox
+      *ngSwitchCase="'checkbox'"
+      [formControl]="formControl"
+      [name]="control.name">
+      {{ control.label | titlecase }}
+    </mat-checkbox>
+    <mat-error *ngIf="showError && control.type === 'checkbox'" class="block text-red-500">
+        {{ getErrorMessage() }}
+    </mat-error>
+  </ng-container>
+  
