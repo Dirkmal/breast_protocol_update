@@ -8,16 +8,6 @@ import { ControlTypes, DynamicControl, InputTypes } from '../../../models/dynami
 import { DynamicFormControlComponent } from '../../../shared/dynamic-form-control/dynamic-form-control.component';
 import { DynamicFormControlService } from '../../../core/services/dynamic-form-control.service';
 
-interface Patient {
-  id: string;
-  name: string;
-}
-
-interface Clinician {
-  id: string;
-  name: string;
-}
-
 @Component({
   selector: 'app-report-form',
   imports: [MaterialModule, ReactiveFormsModule, CommonModule, DynamicFormControlComponent],
@@ -26,6 +16,8 @@ interface Clinician {
 })
 
 export class ReportFormComponent implements OnInit {
+  
+
   detailsForm!: FormGroup;
   macroscopyForm!: FormGroup;
   microscopyForm!: FormGroup;
@@ -214,16 +206,6 @@ export class ReportFormComponent implements OnInit {
   }
 
   nextStep(form?: FormGroup): void {
-    // if (this.currentStep === 0 && this.detailsForm.valid) {
-    //   this.currentStep = 1;
-    // } else if (this.currentStep === 1 && this.macroscopyForm.valid) {
-    //   this.submitReport();
-    // } else {
-    //   this.markFormGroupTouched(this.currentStep === 0 ? this.detailsForm : this.macroscopyForm);
-    //   this.snackBar.open('Please fix the errors before proceeding.', 'Close', {
-    //     duration: 3000
-    //   });
-    // }
     this.currentStep++;
   }
 
@@ -234,18 +216,7 @@ export class ReportFormComponent implements OnInit {
   }
 
   submitReport(): void {
-    // if (this.detailsForm.valid && this.macroscopyForm.valid) {
-    //   const formData = {
-    //     details: this.detailsForm.value,
-    //     macroscopy: {
-    //       ...this.macroscopyForm.value,
-    //       selectedSpecimenTypes: this.specimenTypes.filter((_, i) => 
-    //         this.specimenTypesFormArray.value[i]
-    //       )
-    //     }
-    //   };
-      
-      // console.log('Report data:', formData);
+      console.log(this.detailsForm.value)
       this.snackBar.open('Patient report submitted successfully!', 'Close', {
         duration: 3000
       });
@@ -255,6 +226,14 @@ export class ReportFormComponent implements OnInit {
       this.currentStep = 0;
     // }
   }
+
+  setReportValues() {		
+		// this.report.initial_details = this.detailsForm.value;
+		// this.report.macroscopy = this.macroscopyForm.value;
+		// this.report.microscopy = this.microscopyForm.value;
+		// this.report.ihc = this.ihcForm.value;
+		// this.report.pathologist_report = this.pathologistForm.value;
+	}
 
   // private markFormGroupTouched(formGroup: FormGroup): void {
   //   Object.values(formGroup.controls).forEach(control => {

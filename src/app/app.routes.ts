@@ -4,18 +4,12 @@ import path from 'path';
 import { ReportListComponent } from './features/reports/report-list/report-list.component';
 import { PatientFormComponent } from './features/patients/patient-form/patient-form.component';
 import { ReportFormComponent } from './features/reports/report-form/report-form.component';
-import { AlteReportFormComponent } from './features/reports/alte-report-form/alte-report-form.component';
 
 export const routes: Routes = [
     {
         path: '',
         component: PatientListComponent,
         title: 'Patient List'
-    },
-    {
-        path: 'alte',
-        component: AlteReportFormComponent,
-        title: 'Alte'
     },
     {
         path: 'patient/list',

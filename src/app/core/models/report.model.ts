@@ -1,30 +1,111 @@
-export interface Report {
-    id?: string;
-    patientId: string;
-    reportType: 'lab' | 'radiology' | 'consultation' | 'procedure';
-    reportTitle: string;
-    reportDate: Date;
-    symptoms?: string;
-    diagnosis?: string;
-    treatment?: string;
-    medication?: {
-      name: string;
-      dosage: string;
-      frequency: string;
-      duration: string;
-    }[];
-    labResults?: {
-      testName: string;
-      result: string;
-      normalRange: string;
-      unit: string;
-    }[];
-    radiologyFindings?: string;
-    conclusion: string;
-    recommendations?: string;
-    doctorId: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+import { Patient } from "./patient.model";
+
+/** Grouping structure of report and how it is stored. */
+export class Report {
+	_id?: string;
+	_rev?: string;
+	patient!: Patient;
+	initial_details!: {
+		ref_hospital?: string;
+		ref_clinician?: string;
+		date_of_reporting: string;
+		side: Laterality;
+		date_typed?: string;
+		typed_by?: string;
+	}
+
+	macroscopy!: {
+		specimen_type: {
+			core_needle_biopsy?: boolean;
+			wide_local_excision?: boolean;
+			mastectomy?: boolean;
+			open_biopsy?: boolean;
+			segmental_excision?: boolean;
+			wide_bore_needle_biopsy?: boolean;
+		}
+		specimen_dimensions: {
+			weight: number;
+			x: number;
+			y: number;
+			z: number;						
+		}
+		axillary_procedure: {
+			no_lymph_node_procedure?: boolean;
+			axillary_node_sample?: boolean;
+			sentinel_node_biopsy?: boolean;
+			axillary_node_clearance?: boolean;
+			intrammary_node?: boolean;
+		}
+	}
+
+	microscopy!: {
+		in_situ_carcinoma: {			
+			ductal_carcinoma_in_situ: number;			
+			lobular_carcinoma_in_situ: boolean;
+			paget_disease: boolean;
+		}
+		micro_invasion: {
+			microinvasion: boolean;
+		}
+	}
+
+	microscopy_2!: {
+		invasive_carcinoma: {
+			ic_present?: boolean;		
+			invasive_tumor?: number;
+			whole_size_tumor?: number;			
+			type?: InvasiveCarcinomaTypes | string;
+		}
+		m2_more: {
+			invasive_grade?: InvasiveGrades;
+			sbr_score?: number;
+			tumour_extent?: TumourExtent;
+			lympho_vascular_invasion?: Lympho;
+			site_of_other_nodes?: string;
+		}
+		axillary_node: {
+			an_present?: boolean;
+			total_number?: number;
+			number_positive?: number;
+		}
+	}
+	microscopy_3!: {
+		excision_margins: string;
+		skin_involvement?: SkinInvolvement;
+		nipple_involvement?: boolean;
+		skeletal_muscle_involvement?: SkeletalMuscle; 
+		surgical_margins: {
+			margins: SurgicalMargins;
+			superior?: boolean;
+			inferior?: boolean;
+			anterior?: boolean;
+			posterior?: boolean;
+			lateral?: boolean;
+			medial?: boolean;
+		};
+		pathological_staging: {
+			not_applicable: boolean;
+			pt: number;
+			n: number;
+			m: number;
+		};
+	}
+
+	ihc!: {
+		oestrogen_receptor_status: IHC;
+		pr: IHC;
+		her2: IHC;
+		quick_allred_score: number;
+	}
+	
+	pathologist_report!: {
+		final_diagnosis: string;
+		comment: string;
+		consultant_pathologist: string;
+		date_of_request: string;
+		date_received: string;
+		date_reviewed: string;
+	}
 }
 
 export enum SpecimenTypes {
