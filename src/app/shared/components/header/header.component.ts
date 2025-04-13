@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { User } from '../../../core/models/user.model';
@@ -11,7 +11,8 @@ import { MaterialModule } from '../../material.module';
   imports: [MaterialModule]
 })
 export class HeaderComponent {
-  currentUser: User | null = null;
+  @Output() menuClick = new EventEmitter<void>();
+  // currentUser: User | null = null;
 
   // constructor(private authService: AuthService, private router: Router) {
   //   this.authService.currentUser$.subscribe(user => {

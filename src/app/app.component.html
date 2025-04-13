@@ -1,3 +1,25 @@
-<!-- <app-header></app-header> -->
-<app-sidebar></app-sidebar>
-<router-outlet />
+<mat-sidenav-container class="h-screen">
+    <!-- Side Navigation -->
+    <mat-sidenav #drawer class="sidenav" [fixedInViewport]="true"
+		[attr.role]="'navigation'"
+		[mode]="'over'">
+		<app-sidebar></app-sidebar>
+	</mat-sidenav>
+  
+    <!-- Main Content Area -->
+    <mat-sidenav-content>
+        <mat-toolbar color="accent">
+			<button
+				type="button"
+				aria-label="Toggle sidenav"
+				mat-icon-button
+				(click)="drawer.toggle()">
+				<mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+			</button>
+			<span>Breast Cancer Registry</span>
+		</mat-toolbar>
+      <main class="p-4">
+        <router-outlet></router-outlet>
+      </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>

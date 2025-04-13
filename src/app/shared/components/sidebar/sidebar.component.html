@@ -1,32 +1,10 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav [mode]="'side'" [opened]="isSidenavOpen" class="sidenav">
-    <mat-nav-list>
-      <!-- <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
-        <mat-icon matListItemIcon>dashboard</mat-icon>
-        <span matListItemTitle>Dashboard</span>
-      </a>
-      
-      <mat-divider></mat-divider>
-      -->
-      <a mat-list-item routerLink="patients" routerLinkActive="active">
-        <mat-icon matListItemIcon>people</mat-icon>
-        <span matListItemTitle>Patients</span>
-      </a>
-      
-      <a mat-list-item routerLink="reports" routerLinkActive="active">
-        <mat-icon matListItemIcon>description</mat-icon>
-        <span matListItemTitle>Reports</span>
-      </a>
-      
-      <mat-divider></mat-divider>
-    
-      <!-- <ng-container *ngIf="isAdmin()">
-        <a mat-list-item routerLink="/admin/users" routerLinkActive="active">
-          <mat-icon matListItemIcon>supervisor_account</mat-icon>
-          <span matListItemTitle>User Management</span>
-        </a>
-      </ng-container> -->
-    </mat-nav-list>
-  </mat-sidenav>
-</mat-sidenav-container>  
-
+<mat-nav-list>
+  <a mat-list-item routerLink="/patient/list">
+    <mat-icon>person</mat-icon>
+    <span class="ml-2">Patients</span>
+  </a>
+  <a mat-list-item routerLink="/report/new">
+    <mat-icon>note</mat-icon>
+    <span class="ml-2">Reports</span>
+  </a>
+</mat-nav-list>

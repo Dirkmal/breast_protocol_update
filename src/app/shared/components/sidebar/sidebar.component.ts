@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../core/auth/auth.service';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { MaterialModule } from '../../material.module';
+import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  imports: [MaterialModule]
+  imports: [MaterialModule, RouterModule, CommonModule, RouterLink, RouterLinkActive]
 })
 export class SidebarComponent {
   // constructor(private authService: AuthService) {}
