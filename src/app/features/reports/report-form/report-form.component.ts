@@ -3,10 +3,12 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaterialModule } from '../../../shared/material.module';
 import { CommonModule } from '@angular/common';
-import { AxillaryProcedures, IHC, InSituCarcinoma, InvasiveCarcinomaTypes, InvasiveGrades, Laterality, Lympho, SkeletalMuscle, SkinInvolvement, SpecimenTypes, SurgicalMargins, TumourExtent } from '../../../core/models/report.model';
+import { AxillaryProcedures, IHC, InSituCarcinoma, InvasiveCarcinomaTypes, InvasiveGrades, Laterality, Lympho, Report, SkeletalMuscle, SkinInvolvement, SpecimenTypes, SurgicalMargins, TumourExtent } from '../../../core/models/report.model';
 import { ControlTypes, DynamicControl, InputTypes } from '../../../models/dynamic-control';
-import { DynamicFormControlComponent } from '../../../shared/dynamic-form-control/dynamic-form-control.component';
+import { DynamicFormControlComponent } from '../../../shared/components/dynamic-form-control/dynamic-form-control.component';
 import { DynamicFormControlService } from '../../../core/services/dynamic-form-control.service';
+import { Response } from '../../../models/response';
+import { RxdbService } from '../../../core/services/rxdb.service';
 
 @Component({
   selector: 'app-report-form',
@@ -16,7 +18,7 @@ import { DynamicFormControlService } from '../../../core/services/dynamic-form-c
 })
 
 export class ReportFormComponent implements OnInit {
-  
+  report = new Report;
 
   detailsForm!: FormGroup;
   macroscopyForm!: FormGroup;
@@ -38,7 +40,7 @@ export class ReportFormComponent implements OnInit {
   surgical_marginSF!: FormGroup;
   pathological_stagingSF!: FormGroup;
   
-
+  //options for select form-controls
   specimen_type_options: string[] = Object.values(SpecimenTypes);
   axillary_procedure_options: string[] = Object.values(AxillaryProcedures);
   in_situ_carcinoma_options: string[] = Object.values(InSituCarcinoma);
@@ -55,6 +57,7 @@ export class ReportFormComponent implements OnInit {
   detail_controls = [
     new DynamicControl({ name: 'hospital_Number', required: true }),
     new DynamicControl({ name: 'histology_Number', required: true }),
+    new DynamicControl({ name: 'referring_Hospital', required: true }),
     new DynamicControl({ name: 'referring_Clinician', required: true }),
     new DynamicControl({ controlType: ControlTypes.DATE, name: 'reporting_Date', required: true}),
     new DynamicControl({ controlType: ControlTypes.SELECT, name: 'side', label: 'Laterality', options: this.laterality_options}),      
@@ -87,7 +90,7 @@ export class ReportFormComponent implements OnInit {
 
   /** MICROSCOPY */
   in_situ_carcinoma_controls = [
-    new DynamicControl({ name: 'dcis', label: 'Dual Carcinoma In-situ (DCIS) size', type: InputTypes.NUMBER, required: true }),
+    new DynamicControl({ name: 'dcis', label: 'Dual Carcinoma In-situ size', type: InputTypes.NUMBER, required: true }),
     new DynamicControl({ name: 'lobular', label: 'Lobular Carcinoma In-situ', controlType: ControlTypes.CHECKBOX }),
     new DynamicControl({ name: 'paget', label: 'Paget Disease', controlType: ControlTypes.CHECKBOX }),
     new DynamicControl({ name: 'microinvasion', label: 'Microinvasion present', controlType: ControlTypes.CHECKBOX }),
@@ -156,7 +159,8 @@ export class ReportFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dcs: DynamicFormControlService
+    private dcs: DynamicFormControlService,
+    private rxdbs: RxdbService
   ) { }
 
   ngOnInit(): void {
@@ -215,24 +219,38 @@ export class ReportFormComponent implements OnInit {
     }
   }
 
-  submitReport(): void {
-      console.log(this.detailsForm.value)
-      this.snackBar.open('Patient report submitted successfully!', 'Close', {
-        duration: 3000
-      });
-      
+  async submitReport() {
+    this.setReportValues();
+
+    await this.rxdbs.saveReport(this.report);
+    this.snackBar.open('Report saved', 'Close', {
+      duration: 3000
+    }); 
       // Reset forms and return to first step
-      this.initForms();
+      // this.initForms();
       this.currentStep = 0;
     // }
   }
 
+  // saveReport() {
+	// 	this.setReportValues();
+  //   console.log('here in saveReport');
+				
+	// 	this.nedbs.save(this.report).subscribe((res: Response) => {			
+	// 		this.snackBar.open(res.message || '', 'Close', {
+  //       duration: 3000
+  //     });
+	// 	}, (err) => {			
+	// 		// this.errorAlert(err, "Could not save report");
+	// 	});				
+	// }
+
   setReportValues() {		
-		// this.report.initial_details = this.detailsForm.value;
-		// this.report.macroscopy = this.macroscopyForm.value;
-		// this.report.microscopy = this.microscopyForm.value;
-		// this.report.ihc = this.ihcForm.value;
-		// this.report.pathologist_report = this.pathologistForm.value;
+		this.report.initial_details = this.detailsForm.value;
+		this.report.macroscopy = this.macroscopyForm.value;
+		this.report.microscopy = this.microscopyForm.value;
+		this.report.ihc = this.ihcForm.value;
+		this.report.pathologist_report = this.pathologistForm.value;
 	}
 
   // private markFormGroupTouched(formGroup: FormGroup): void {

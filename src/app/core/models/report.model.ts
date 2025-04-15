@@ -4,12 +4,14 @@ import { Patient } from "./patient.model";
 export class Report {
 	_id?: string;
 	_rev?: string;
-	patient!: Patient;
+	// patient!: Patient;
 	initial_details!: {
-		ref_hospital?: string;
-		ref_clinician?: string;
-		date_of_reporting: string;
-		side: Laterality;
+		hospital_Number?: string;
+		histology_Number: string;
+		referring_Hospital?: string;
+		referring_Clinician?: string;
+		reporting_Date?: string;
+		side?: Laterality;				
 		date_typed?: string;
 		typed_by?: string;
 	}
@@ -25,9 +27,9 @@ export class Report {
 		}
 		specimen_dimensions: {
 			weight: number;
-			x: number;
-			y: number;
-			z: number;						
+			length: number;
+			width: number;
+			height: number;						
 		}
 		axillary_procedure: {
 			no_lymph_node_procedure?: boolean;
@@ -43,20 +45,13 @@ export class Report {
 			ductal_carcinoma_in_situ: number;			
 			lobular_carcinoma_in_situ: boolean;
 			paget_disease: boolean;
-		}
-		micro_invasion: {
 			microinvasion: boolean;
 		}
-	}
-
-	microscopy_2!: {
 		invasive_carcinoma: {
 			ic_present?: boolean;		
-			invasive_tumor?: number;
+			invasive_tumor_size?: number;
 			whole_size_tumor?: number;			
-			type?: InvasiveCarcinomaTypes | string;
-		}
-		m2_more: {
+			ic_type?: InvasiveCarcinomaTypes | string;
 			invasive_grade?: InvasiveGrades;
 			sbr_score?: number;
 			tumour_extent?: TumourExtent;
@@ -68,14 +63,14 @@ export class Report {
 			total_number?: number;
 			number_positive?: number;
 		}
-	}
-	microscopy_3!: {
-		excision_margins: string;
-		skin_involvement?: SkinInvolvement;
-		nipple_involvement?: boolean;
-		skeletal_muscle_involvement?: SkeletalMuscle; 
-		surgical_margins: {
-			margins: SurgicalMargins;
+		margin: {
+			excision_margins: string;
+			skin_involvement?: SkinInvolvement;
+			nipple_involvement?: boolean;
+			skeletal_muscle_involvement?: SkeletalMuscle; 
+			surgical_margins: SurgicalMargins;
+		}
+		other_margins: {			
 			superior?: boolean;
 			inferior?: boolean;
 			anterior?: boolean;

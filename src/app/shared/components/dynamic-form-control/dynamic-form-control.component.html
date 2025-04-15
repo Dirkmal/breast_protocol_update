@@ -1,10 +1,10 @@
 <ng-container [ngSwitch]="control.controlType">
     <!-- Input -->
-   <mat-form-field *ngSwitchCase="'input'" appearance="outline" >
+   <mat-form-field *ngSwitchCase="'input'" appearance="outline" [formGroup]="form">
       <mat-label>{{ control.label | titlecase }}</mat-label>
       <input
-        matInput
-        [formControl]="formControl"        
+        matInput        
+        [formControlName]="control.name"       
         [type]="control.type"       
       />
               
@@ -14,11 +14,11 @@
     </mat-form-field>
 
      <!-- Date Input with Date Picker -->
-   <mat-form-field *ngSwitchCase="'date'" appearance="outline" >
+   <mat-form-field *ngSwitchCase="'date'" appearance="outline" [formGroup]="form">
     <mat-label>{{ control.label | titlecase }}</mat-label>
     <input
       matInput
-      [formControl]="formControl"        
+      [formControlName]="control.name"        
       [type]="control.type"
       [matDatepicker]="picker"        
     />
@@ -32,13 +32,12 @@
   </mat-form-field>
   
     <!-- Textarea -->
-    <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" >
+    <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" [formGroup]="form">
       <mat-label>{{ control.label | titlecase }}</mat-label>
       <textarea
         matInput
-        [formControl]="formControl"
-        [placeholder]="control.placeholder"
-        [name]="control.name"
+        [formControlName]="control.name"
+        [placeholder]="control.placeholder"        
         rows="4"
       ></textarea>
       @if (showError) {
@@ -47,9 +46,9 @@
     </mat-form-field>
   
     <!-- Select -->
-    <mat-form-field *ngSwitchCase="'select'" appearance="outline" >
+    <mat-form-field *ngSwitchCase="'select'" appearance="outline" [formGroup]="form">
       <mat-label>{{ control.label | titlecase }}</mat-label>
-      <mat-select [formControl]="formControl" [name]="control.name">
+      <mat-select [formControlName]="control.name">
         <mat-option
           *ngFor="let option of control.options"
           [value]="option"
@@ -63,14 +62,15 @@
     </mat-form-field>
   
     <!-- Checkbox -->
-    <mat-checkbox
-      *ngSwitchCase="'checkbox'"
-      [formControl]="formControl"
-      [name]="control.name">
-      {{ control.label | titlecase }}
-    </mat-checkbox>
-    <mat-error *ngIf="showError && control.type === 'checkbox'" class="block text-red-500">
-        {{ getErrorMessage() }}
-    </mat-error>
+     <span [formGroup]="form">
+      <mat-checkbox
+        *ngSwitchCase="'checkbox'"
+        [formControlName]="control.name" >
+        {{ control.label | titlecase }}
+      </mat-checkbox>
+      <mat-error *ngIf="showError && control.type === 'checkbox'" class="block text-red-500">
+          {{ getErrorMessage() }}
+      </mat-error>
+  </span>
   </ng-container>
   
