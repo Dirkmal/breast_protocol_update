@@ -1,10 +1,28 @@
 <mat-nav-list>
   <a mat-list-item routerLink="/patient/list" routerLinkActive="router-link-active">
+    <mat-icon>dashboard</mat-icon>
+    <span class="ml-2">Overview</span>
+  </a>
+  <a mat-list-item routerLink="/patient/list" routerLinkActive="router-link-active">
     <mat-icon>person</mat-icon>
     <span class="ml-2">Patients</span>
   </a>
   <a mat-list-item routerLink="/report/new" routerLinkActive="router-link-active">
-    <mat-icon>note</mat-icon>
+    <mat-icon>description</mat-icon>
     <span class="ml-2">Reports</span>
+  </a>
+  <span class="line"></span>
+  <a mat-list-item routerLink="/patient/list" routerLinkActive="router-link-active">
+    <mat-icon>person</mat-icon>
+    <span class="ml-2">Accounts</span>
+  </a>
+  <a mat-list-item routerLink="/patient/list" routerLinkActive="router-link-active">
+    <mat-icon>local_hospital</mat-icon>
+    <span class="ml-2">Institutions</span>
+  </a>
+  <span class="line"></span>
+  <a mat-list-item routerLink="/patient/list" routerLinkActive="router-link-active">
+    <mat-icon>build</mat-icon>
+    <span class="ml-2">Settings</span>
   </a>
 </mat-nav-list>

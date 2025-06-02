@@ -3,12 +3,14 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaterialModule } from '../../../shared/material.module';
 import { CommonModule } from '@angular/common';
-import { AxillaryProcedures, IHC, InSituCarcinoma, InvasiveCarcinomaTypes, InvasiveGrades, Laterality, Lympho, Report, SkeletalMuscle, SkinInvolvement, SpecimenTypes, SurgicalMargins, TumourExtent } from '../../../core/models/report.model';
+import { AxillaryProcedures, IHCStatus, InSituCarcinoma, InvasiveCarcinomaTypes, InvasiveGrades, Laterality, Lympho, Report, SkeletalMuscle, SkinInvolvement, SpecimenTypes, SurgicalMargins, TumourExtent } from '../../../core/models/report.model';
 import { ControlTypes, DynamicControl, InputTypes } from '../../../models/dynamic-control';
 import { DynamicFormControlComponent } from '../../../shared/components/dynamic-form-control/dynamic-form-control.component';
 import { DynamicFormControlService } from '../../../core/services/dynamic-form-control.service';
 import { Response } from '../../../models/response';
 import { RxdbService } from '../../../core/services/rxdb.service';
+import { ReportService } from '../../../core/services/report.service';
+import { PhpServiceService } from '../../../core/services/php-service.service';
 
 @Component({
   selector: 'app-report-form',
@@ -52,90 +54,91 @@ export class ReportFormComponent implements OnInit {
 	skin_involvement_options: string[] = Object.values(SkinInvolvement);
 	skeletal_options: string[] = Object.values(SkeletalMuscle);
 	margins: string[] = Object.values(SurgicalMargins);
-	ihc_options: string[] = Object.values(IHC);	
+	ihc_options: string[] = Object.values(IHCStatus);	
   
   detail_controls = [
-    new DynamicControl({ name: 'hospital_Number', required: true }),
-    new DynamicControl({ name: 'histology_Number', required: true }),
-    new DynamicControl({ name: 'referring_Hospital', required: true }),
-    new DynamicControl({ name: 'referring_Clinician', required: true }),
-    new DynamicControl({ controlType: ControlTypes.DATE, name: 'reporting_Date', required: true}),
+    new DynamicControl({ label: 'patient', name: 'patient_id', required: true }),
+    new DynamicControl({ name: 'hospital_number', required: true }),
+    new DynamicControl({ name: 'histology_number', required: true }),
+    new DynamicControl({ name: 'referring_hospital', required: true }),
+    new DynamicControl({ name: 'referring_clinician', required: true }),
+    new DynamicControl({ controlType: ControlTypes.DATE, name: 'reporting_date', required: true}),
     new DynamicControl({ controlType: ControlTypes.SELECT, name: 'side', label: 'Laterality', options: this.laterality_options}),      
   ];
   
   /** MACROSCOPY */
   specimen_type_controls = [
-    new DynamicControl({ name: 'core_needle_biopsy', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'wide_local_excision', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'mastectomy', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'open_biopsy', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'segmental_excision', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'wide_bore_needle_biopsy', controlType: ControlTypes.CHECKBOX }),
+    new DynamicControl({ name: 'core_needle_biopsy', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'wide_local_excision', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'mastectomy', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'open_biopsy', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'segmental_excision', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'wide_bore_needle_biopsy', controlType: ControlTypes.CHECKBOX, value: false }),
   ];
 
   specimen_dimension_controls = [
-    new DynamicControl({ name: 'weight', label: 'weight (g)', type: InputTypes.NUMBER, value: 0, required: true }),
-		new DynamicControl({ name: 'length', label: 'length (mm)', type: InputTypes.NUMBER, value: 0, required: true }),
-		new DynamicControl({ name: 'width', label: 'width (mm)', type: InputTypes.NUMBER, value: 0, required: true }),
-		new DynamicControl({ name: 'height', label: 'height (mm)', type: InputTypes.NUMBER, value: 0, required: true }),
+    new DynamicControl({ name: 'weight', label: 'weight (g)', controlType: ControlTypes.NUMBER, value: 0, required: true }),
+		new DynamicControl({ name: 'length', label: 'length (mm)', controlType: ControlTypes.NUMBER, value: 0, required: true }),
+		new DynamicControl({ name: 'width', label: 'width (mm)', controlType: ControlTypes.NUMBER, value: 0, required: true }),
+		new DynamicControl({ name: 'height', label: 'height (mm)', controlType: ControlTypes.NUMBER, value: 0, required: true }),
   ];
 
   axillary_procedure_controls = [
-    new DynamicControl({ name: 'no_lymph_node_procedure', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'axillary_node_sample', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'sentinel_node_biopsy', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'axillary_node_clearance', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'intrammary_node', controlType: ControlTypes.CHECKBOX }),
+    new DynamicControl({ name: 'no_lymph_node_procedure', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'axillary_node_sample', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'sentinel_node_biopsy', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'axillary_node_clearance', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'intrammary_node', controlType: ControlTypes.CHECKBOX, value: false }),
   ];
 
   /** MICROSCOPY */
   in_situ_carcinoma_controls = [
-    new DynamicControl({ name: 'dcis', label: 'Dual Carcinoma In-situ size', type: InputTypes.NUMBER, required: true }),
-    new DynamicControl({ name: 'lobular', label: 'Lobular Carcinoma In-situ', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'paget', label: 'Paget Disease', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'microinvasion', label: 'Microinvasion present', controlType: ControlTypes.CHECKBOX }),
+    new DynamicControl({ name: 'ductal_carcinoma_in_situ', label: 'Ductal Carcinoma In-situ size', controlType: ControlTypes.NUMBER, required: true }),
+    new DynamicControl({ name: 'lobular_carcinoma_in_situ', label: 'Lobular Carcinoma In-situ', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'paget_disease', label: 'Paget Disease', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'microinvasion', label: 'Microinvasion present', controlType: ControlTypes.CHECKBOX, value: false }),
   ];
 
   invasive_carcinoma_controls = [
-    new DynamicControl({ name: 'invasive_present', label: 'Invasive Carcinoma Present', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'invasive_tumor_size', label: 'Invasive Tumor Size (mm)', type: InputTypes.NUMBER }),
-    new DynamicControl({ name: 'whole_tumor_size', label: 'Whole Tumor Size (mm)', type: InputTypes.NUMBER }),
-    new DynamicControl({ name: 'invasive_carcinoma_type', controlType: ControlTypes.SELECT, options: this.invasive_carcinoma_options }),
+    new DynamicControl({ name: 'ic_present', label: 'Invasive Carcinoma Present', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'invasive_tumor_size', label: 'Invasive Tumor Size (mm)', controlType: ControlTypes.NUMBER }),
+    new DynamicControl({ name: 'whole_tumor_size', label: 'Whole Tumor Size (mm)', controlType: ControlTypes.NUMBER }),
+    new DynamicControl({ name: 'ic_type', label: 'Invasive Carcinoma Type', controlType: ControlTypes.SELECT, options: this.invasive_carcinoma_options }),
     new DynamicControl({ name: 'invasive_grade', controlType: ControlTypes.SELECT, options: this.invasive_grades_options }),
-    new DynamicControl({ name: 'sbr_score', type: InputTypes.NUMBER }),
-    new DynamicControl({ name: 'tumor_extent', controlType: ControlTypes.SELECT, options: this.tumor_extent_options }),
+    new DynamicControl({ name: 'sbr_score', controlType: ControlTypes.NUMBER }),
+    new DynamicControl({ name: 'tumour_extent', controlType: ControlTypes.SELECT, options: this.tumor_extent_options }),
     new DynamicControl({ name: 'lympho_vascular_invasion', controlType: ControlTypes.SELECT, options: this.lympho_options }),
     new DynamicControl({ name: 'site_of_other_nodes' })
   ];
 
   axillary_node_controls = [
-    new DynamicControl({ name: 'axillary_node_present', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'total_number', type: InputTypes.NUMBER }),
-    new DynamicControl({ name: 'number_positive', type: InputTypes.NUMBER })
+    new DynamicControl({ name: 'an_present', label: 'Axillary Node Present', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'total_number', controlType: ControlTypes.NUMBER }),
+    new DynamicControl({ name: 'number_positive', controlType: ControlTypes.NUMBER })
   ];
 
   margin_controls = [
     new DynamicControl({ name: 'excision_margins' }),
     new DynamicControl({ name: 'skin_involvement', controlType: ControlTypes.SELECT, options: this.skin_involvement_options }),
-    new DynamicControl({ name: 'nipple_involvement', controlType: ControlTypes.CHECKBOX }),
+    new DynamicControl({ name: 'nipple_involvement', controlType: ControlTypes.CHECKBOX, value: false }),
     new DynamicControl({ name: 'skeletal_muscle_involvement', controlType: ControlTypes.SELECT, options: this.skeletal_options }),
     new DynamicControl({ name: 'surgical_margins', controlType: ControlTypes.SELECT, options: this.skin_involvement_options }),
   ];
 
   surgical_margin_controls = [
-    new DynamicControl({ name: 'superior', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'inferior', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'anterior', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'posterior', controlType: ControlTypes.CHECKBOX }),
-		new DynamicControl({ name: 'lateral', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'medial', controlType: ControlTypes.CHECKBOX })
+    new DynamicControl({ name: 'superior', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'inferior', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'anterior', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'posterior', controlType: ControlTypes.CHECKBOX, value: false }),
+		new DynamicControl({ name: 'lateral_', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'medial', controlType: ControlTypes.CHECKBOX, value: false })
   ]
 
   pathological_staging_controls = [
-    new DynamicControl({ name: 'pt_not_applicable', label: 'not applicable', controlType: ControlTypes.CHECKBOX }),
-    new DynamicControl({ name: 'pt', type: InputTypes.NUMBER }),
-    new DynamicControl({ name: 'n', type: InputTypes.NUMBER }),
-    new DynamicControl({ name: 'm', type: InputTypes.NUMBER }),
+    new DynamicControl({ name: 'not_applicable', controlType: ControlTypes.CHECKBOX, value: false }),
+    new DynamicControl({ name: 'pt', controlType: ControlTypes.NUMBER }),
+    new DynamicControl({ name: 'n', controlType: ControlTypes.NUMBER }),
+    new DynamicControl({ name: 'm', controlType: ControlTypes.NUMBER }),
   ]
 
   /** IHC **/
@@ -143,7 +146,7 @@ export class ReportFormComponent implements OnInit {
 		new DynamicControl({ name: 'oestrogen_receptor_status', controlType: ControlTypes.SELECT, options: this.ihc_options }),
 		new DynamicControl({ name: 'pr', controlType: ControlTypes.SELECT, options: this.ihc_options }),
 		new DynamicControl({ name: 'her2', controlType: ControlTypes.SELECT, options: this.ihc_options }),
-		new DynamicControl({ name: 'quick_allred_score', type: InputTypes.NUMBER })
+		new DynamicControl({ name: 'quick_allred_score', controlType: ControlTypes.NUMBER })
 	];
 
 	/** Pathologist report **/
@@ -160,7 +163,8 @@ export class ReportFormComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private dcs: DynamicFormControlService,
-    private rxdbs: RxdbService
+    private rs: ReportService,
+    private phps: PhpServiceService
   ) { }
 
   ngOnInit(): void {
@@ -190,11 +194,11 @@ export class ReportFormComponent implements OnInit {
     this.pathological_stagingSF = this.dcs.toFormGroup(this.pathological_staging_controls);
 
     this.microscopyForm = this.fb.group({
-      in_situ: this.in_situSF,
+      in_situ_carcinoma: this.in_situSF,
       invasive_carcinoma: this.invasive_carcinomaSF,
       axillary_node: this.axillary_nodeSF,
       margin: this.marginSF,
-      surgical_margin: this.surgical_marginSF,
+      surgical_margins_actual: this.surgical_marginSF,
       pathological_staging: this.pathological_stagingSF
     });
 
@@ -219,31 +223,31 @@ export class ReportFormComponent implements OnInit {
     }
   }
 
-  async submitReport() {
-    this.setReportValues();
+  // async submitReport() {
+  //   this.setReportValues();
+  //   console.log(this.report)
+  //   await this.rxdbs.saveReport(this.report);
+  //   this.snackBar.open('Report saved', 'Close', {
+  //     duration: 3000
+  //   }); 
+  //     // Reset forms and return to first step
+  //     // this.initForms();
+  //     this.currentStep = 0;
+  //   // }
+  // }
 
-    await this.rxdbs.saveReport(this.report);
-    this.snackBar.open('Report saved', 'Close', {
-      duration: 3000
-    }); 
-      // Reset forms and return to first step
-      // this.initForms();
-      this.currentStep = 0;
-    // }
-  }
-
-  // saveReport() {
-	// 	this.setReportValues();
-  //   console.log('here in saveReport');
+  saveReport() {
+		this.setReportValues();    
 				
-	// 	this.nedbs.save(this.report).subscribe((res: Response) => {			
-	// 		this.snackBar.open(res.message || '', 'Close', {
-  //       duration: 3000
-  //     });
-	// 	}, (err) => {			
-	// 		// this.errorAlert(err, "Could not save report");
-	// 	});				
-	// }
+		this.phps.createReport(this.report).subscribe({
+      next: (savedReport) => {
+        console.log('Report saved successfully', savedReport);
+      },
+      error: (err) => {
+        console.error('Error saving report', err);
+      }
+    });		
+	}
 
   setReportValues() {		
 		this.report.initial_details = this.detailsForm.value;
@@ -251,6 +255,8 @@ export class ReportFormComponent implements OnInit {
 		this.report.microscopy = this.microscopyForm.value;
 		this.report.ihc = this.ihcForm.value;
 		this.report.pathologist_report = this.pathologistForm.value;
+
+    console.log(this.report);
 	}
 
   // private markFormGroupTouched(formGroup: FormGroup): void {

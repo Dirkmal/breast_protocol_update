@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { User } from '../../../../core/models/user.model';
+import { Profile } from '../../../../core/models/user.model';
 import { UserService } from '../../../../core/services/user.service';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -19,7 +19,7 @@ import { CommonModule, NgClass } from '@angular/common';
 })
 export class UserListComponent implements OnInit {
   displayedColumns: string[] = ['firstName', 'lastName', 'email', 'role', 'department', 'active', 'actions'];
-  dataSource = new MatTableDataSource<User>([]);
+  dataSource = new MatTableDataSource<Profile>([]);
   loading = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -63,7 +63,7 @@ export class UserListComponent implements OnInit {
       });
     }
   
-    openUserForm(user?: User): void {
+    openUserForm(user?: Profile): void {
       const dialogRef = this.dialog.open(UserFormComponent, {
         width: '600px',
         data: { user }
@@ -76,7 +76,7 @@ export class UserListComponent implements OnInit {
       });
     }
   
-    deleteUser(user: User): void {
+    deleteUser(user: Profile): void {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: '350px',
         data: {
@@ -102,7 +102,7 @@ export class UserListComponent implements OnInit {
       });
     }
   
-    toggleUserStatus(user: User): void {
+    toggleUserStatus(user: Profile): void {
       if (!user.id) return;
       
       const updatedUser = { ...user, active: !user.active };

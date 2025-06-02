@@ -10,3 +10,10 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class SharedModule { }
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  errors?: string[];
+}

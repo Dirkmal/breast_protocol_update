@@ -47,6 +47,14 @@ export class DynamicControl {
 		this.validators = options.validators || [];
 		this.errors = options.errors || {};
 		this.disabled = options.disabled || false;
+
+		if (options.type == 'number') {
+			options.value = 0
+		}
+
+		if (options.controlType == 'checkbox') {
+			options.value = false
+		}
 	}	
 }
 
@@ -66,5 +74,6 @@ export enum ControlTypes {
     DATE = 'date', //date must be specified because of Material's datepicker
     CHECKBOX = 'checkbox',
     TEXTAREA = 'textarea',
-    RADIO = 'radio'
+    RADIO = 'radio',
+	NUMBER = 'number',
 }

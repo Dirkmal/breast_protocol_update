@@ -16,9 +16,9 @@ export class SidebarComponent {
   // isAdmin(): boolean {
   //   return this.authService.isAdmin();
   // }
-  isSidenavOpen = true;
+  // isSidenavOpen = true;
 
-  toggleSidenav(): void {
-    this.isSidenavOpen = !this.isSidenavOpen;
-  }
+  // toggleSidenav(): void {
+  //   this.isSidenavOpen = !this.isSidenavOpen;
+  // }
 }

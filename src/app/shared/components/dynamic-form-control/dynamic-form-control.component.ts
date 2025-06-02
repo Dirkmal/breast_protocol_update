@@ -18,7 +18,7 @@ export class DynamicFormControlComponent {
   ngOnInit(): void {
     if (this.control?.value !== undefined) {
       this.formControl.setValue(this.control.value);
-    }    
+    }      
   }
 
   getformControl() {

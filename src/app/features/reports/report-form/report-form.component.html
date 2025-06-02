@@ -90,8 +90,8 @@
           <div class="form-section">
             <h3>Axillary Node</h3>
               <div class="dimensions-container-4">
-                @for (ap of axillary_procedure_controls; track ap) {
-                  <app-dynamic-form-control [control]="ap" [form]="axillary_proSF">
+                @for (ap of axillary_node_controls; track ap) {
+                  <app-dynamic-form-control [control]="ap" [form]="axillary_nodeSF">
                   </app-dynamic-form-control>
                 }
               </div>
@@ -168,7 +168,7 @@
       
         <div class="button-row">
           <button mat-button (click)="previousStep()">Back</button>
-          <button mat-raised-button color="primary" (click)="submitReport()">Submit</button>
+          <button mat-raised-button color="primary" (click)="saveReport()">Submit</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

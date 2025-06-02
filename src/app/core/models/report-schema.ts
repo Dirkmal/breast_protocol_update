@@ -22,7 +22,7 @@ export const reportSchema = {
           date_typed: { type: 'string' },
           typed_by: { type: 'string' }
         },
-        required: ['histology_Number']
+        // required: ['histology_Number']
       },
   
       macroscopy: {
@@ -47,7 +47,7 @@ export const reportSchema = {
               width: { type: 'number' },
               height: { type: 'number' }
             },
-            required: ['weight', 'length', 'width', 'height']
+            // required: ['weight', 'length', 'width', 'height']
           },
           axillary_procedure: {
             type: 'object',
@@ -60,7 +60,7 @@ export const reportSchema = {
             }
           }
         },
-        required: ['specimen_type', 'specimen_dimensions', 'axillary_procedure']
+        // required: ['specimen_type', 'specimen_dimensions', 'axillary_procedure']
       },
   
       microscopy: {
@@ -74,14 +74,14 @@ export const reportSchema = {
               paget_disease: { type: 'boolean' },
               microinvasion: { type: 'boolean' }
             },
-            required: ['ductal_carcinoma_in_situ', 'lobular_carcinoma_in_situ', 'paget_disease', 'microinvasion']
+            // required: ['ductal_carcinoma_in_situ', 'lobular_carcinoma_in_situ', 'paget_disease', 'microinvasion']
           },
           invasive_carcinoma: {
             type: 'object',
             properties: {
               ic_present: { type: 'boolean' },
               invasive_tumor_size: { type: 'number' },
-              whole_size_tumor: { type: 'number' },
+              whole_tumor_size: { type: 'number' },
               ic_type: { type: 'string' },
               invasive_grade: { type: 'string' },
               sbr_score: { type: 'number' },
@@ -107,7 +107,7 @@ export const reportSchema = {
               skeletal_muscle_involvement: { type: 'string' },
               surgical_margins: { type: 'string' }
             },
-            required: ['excision_margins', 'surgical_margins']
+            // required: ['excision_margins', 'surgical_margins']
           },
           other_margins: {
             type: 'object',
@@ -128,10 +128,10 @@ export const reportSchema = {
               n: { type: 'number' },
               m: { type: 'number' }
             },
-            required: ['not_applicable', 'pt', 'n', 'm']
+            // required: ['not_applicable', 'pt', 'n', 'm']
           }
         },
-        required: ['in_situ_carcinoma', 'margin', 'pathological_staging']
+        // required: ['in_situ_carcinoma', 'margin', 'pathological_staging']
       },
   
       ihc: {
@@ -142,7 +142,7 @@ export const reportSchema = {
           her2: { type: 'string' },
           quick_allred_score: { type: 'number' }
         },
-        required: ['oestrogen_receptor_status', 'pr', 'her2', 'quick_allred_score']
+        // required: ['oestrogen_receptor_status', 'pr', 'her2', 'quick_allred_score']
       },
   
       pathologist_report: {
