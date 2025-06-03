@@ -1,0 +1,31 @@
+.grid {
+  display: grid;
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
+.card {
+  border: 0.2px solid #b8b8b8;
+  padding: 1rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.h-80 {
+  height: 20rem;
+}
+
+.table-container {
+  position: relative;
+  min-height: 400px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
