@@ -37,7 +37,7 @@ export class DatabaseService {
     this.dbInstance = this.init();
   }
 
-  public async init(): Promise<RxDatabase> {
+  private async init(): Promise<RxDatabase> {
     const db = await createRxDatabase({
       name: 'reportdb',
       storage,

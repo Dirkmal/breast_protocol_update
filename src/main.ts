@@ -9,7 +9,7 @@ import { DatabaseService } from './app/rxdb/rxdb.service';
 
 async function bootstrap() {
   const dbService = new DatabaseService();
-  await dbService.init();
+  await dbService.db;
 
   return bootstrapApplication(AppComponent, {
     providers: [
