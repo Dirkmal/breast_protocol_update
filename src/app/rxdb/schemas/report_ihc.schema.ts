@@ -1,0 +1,23 @@
+export const reportIhcSchema = {
+  title: 'Report IHC Schema',
+  version: 0,
+  description: 'IHC (Immunohistochemistry)',
+  type: 'object',
+  primaryKey: 'id',
+  properties: {
+    id: { type: 'string', maxLength: 36 },
+    report_id: { type: 'string', maxLength: 36 },
+    oestrogen_receptor_status: { type: 'string' },
+    pr: { type: 'string' },
+    her2: { type: 'string' },
+    quick_allred_score: { type: 'integer' },
+  },
+  required: [
+    'id',
+    'report_id',
+    'oestrogen_receptor_status',
+    'pr',
+    'her2',
+    'quick_allred_score',
+  ],
+};

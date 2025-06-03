@@ -1,0 +1,27 @@
+export const reportSpecimenTypeSchema = {
+  title: 'report_specimen_type schema',
+  version: 0,
+  description: 'report_specimen_type table',
+  primaryKey: 'id',
+  type: 'object',
+  properties: {
+    id: { type: 'string', maxLength: 36 },
+    report_id: { type: 'string' },
+    core_needle_biopsy: { type: 'boolean', default: false },
+    wide_local_excision: { type: 'boolean', default: false },
+    mastectomy: { type: 'boolean', default: false },
+    open_biopsy: { type: 'boolean', default: false },
+    segmental_excision: { type: 'boolean', default: false },
+    wide_bore_needle_biopsy: { type: 'boolean', default: false },
+  },
+  required: [
+    'id',
+    'report_id',
+    'core_needle_biopsy',
+    'wide_local_excision',
+    'mastectomy',
+    'open_biopsy',
+    'segmental_excision',
+    'wide_bore_needle_biopsy',
+  ],
+};

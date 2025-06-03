@@ -1,0 +1,27 @@
+export const reportPathologistReportSchema = {
+  title: 'Report Pathologist Report Schema',
+  version: 0,
+  description: 'Pathologist Report',
+  type: 'object',
+  primaryKey: 'id',
+  properties: {
+    id: { type: 'string', maxLength: 36 },
+    report_id: { type: 'string', maxLength: 36 },
+    final_diagnosis: { type: 'string' },
+    comment: { type: 'string' },
+    consultant_pathologist: { type: 'string', maxLength: 255 },
+    date_of_request: { type: 'string', format: 'date' },
+    date_received: { type: 'string', format: 'date' },
+    date_reviewed: { type: 'string', format: 'date' },
+  },
+  required: [
+    'id',
+    'report_id',
+    'final_diagnosis',
+    'comment',
+    'consultant_pathologist',
+    'date_of_request',
+    'date_received',
+    'date_reviewed',
+  ],
+};
