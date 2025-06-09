@@ -6,15 +6,10 @@ export interface Patient {
     dateOfBirth: Date;
     gender: string;
     contactNumber: string;
-    insurance_provider: string;
-    insurance_number: string;
+    insurance_provider?: string;
+    insurance_number?: string;
     email?: string;
     address?: string;
-    // emergencyContact: {
-    //   name: string;
-    //   relationship: string;
-    //   contactNumber: string;
-    // };
     bloodGroup?: string;
     medicalHistory?: string;
     createdBy?: string;

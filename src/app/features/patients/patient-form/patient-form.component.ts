@@ -4,13 +4,14 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PatientService } from '../../../core/services/patient.service';
 import { MaterialModule } from '../../../shared/material.module';
+import { DynamicFormControlComponent } from '../../../shared/components/dynamic-form-control/dynamic-form-control.component';
 
 
 @Component({
   selector: 'app-patient-form',
   templateUrl: './patient-form.component.html',
   styleUrls: ['./patient-form.component.scss'],
-  imports: [ReactiveFormsModule, MaterialModule]
+  imports: [ReactiveFormsModule, MaterialModule, DynamicFormControlComponent]
 })
 export class PatientFormComponent implements OnInit {
   patientForm!: FormGroup;
@@ -18,6 +19,30 @@ export class PatientFormComponent implements OnInit {
   genders = ['Male', 'Female'];
   bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   
+  patient_controls = [
+    { name: 'hospitalNumber', type: 'text', label: 'Hospital Number', required: true },
+    { name: 'firstName', type: 'text', label: 'First Name', required: true },
+    { name: 'lastName', type: 'text', label: 'Last Name', required: true },
+    { name: 'dateOfBirth', type: 'date', label: 'Date of Birth', required: true },
+    { name: 'gender', type: 'text', label: 'Date of Birth', required: true },
+
+    // hospitalNumber: string;
+    // firstName: string;
+    // lastName: string;
+    // dateOfBirth: Date;
+    // gender: string;
+    // contactNumber: string;
+    // insurance_provider?: string;
+    // insurance_number?: string;
+    // email?: string;
+    // address?: string;
+    // bloodGroup?: string;
+    // medicalHistory?: string;
+    // createdBy?: string;
+    // createdAt?: Date;
+    // updatedAt?: Date;
+  ]
+
   constructor(
     private fb: FormBuilder,
     private patientService: PatientService,

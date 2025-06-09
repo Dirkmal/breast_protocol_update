@@ -1,155 +1,20 @@
 <div class="container mat-elevation-z4">
-    <h2 class="form-title">Patient Registration</h2>
-    
-    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
-      <div class="form-container">
-        <!-- Personal Information Section -->
-        <h3>Personal Information</h3>
+  <h2 class="form-title">Patient Registration</h2>
+  
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+    <div class="form-container">      
+      <h3>Patient Information</h3>
+      @for (pc of patient_controls; track pc) {
         <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>First Name</mat-label>
-            <input matInput formControlName="firstName" required>
-            @if (patientForm.controls['firstName'].errors?.['required']) {
-                <mat-error>First Name is required</mat-error>
-            }
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Last Name</mat-label>
-            <input matInput formControlName="lastName" required>
-            @if (patientForm.controls['lastName'].errors?.['required']) {
-                <mat-error>Last Name is required</mat-error>
-            }
-          </mat-form-field>
+          <app-dynamic-form-control [control]="pc" [form]="patientForm">
+          </app-dynamic-form-control>
         </div>
-  
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Date of Birth</mat-label>
-            <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" required>
-            <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
-            <mat-datepicker #dobPicker></mat-datepicker>
-            @if (patientForm.controls['dateOfBirth'].errors?.['required']) {
-                <mat-error>Date of birth is required</mat-error>
-            }
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Gender</mat-label>
-            <mat-select formControlName="gender" required>
-                @for (gender of genders; track gender) {
-                    <mat-option [value]="gender">{{ gender }}</mat-option>
-                }              
-            </mat-select>
-            @if (patientForm.controls['gender'].errors?.['required']) {
-                <mat-error>Gender is required</mat-error>
-            }
-          </mat-form-field>
-        </div>
-  
-        <!-- Contact Information Section -->
-        <h3>Contact Information</h3>
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Contact Number</mat-label>
-            <input matInput formControlName="contactNumber" required>
-            @if (patientForm.controls['contactNumber'].errors?.['required']) {
-                <mat-error>Contact Number is required</mat-error>
-            }
-            @if (patientForm.get('contactNumber')?.errors?.['pattern']) {
-                <mat-error>Please enter a valid phone number</mat-error>
-            }
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input matInput formControlName="email" type="email">
-            @if (patientForm.controls['email'].errors?.['email']) {
-                <mat-error> Please enter a valid email address</mat-error>
-            }            
-          </mat-form-field>
-        </div>
-  
-        <div class="form-row full-width">
-          <mat-form-field appearance="outline">
-            <mat-label>Address</mat-label>
-            <textarea matInput formControlName="address" rows="3"></textarea>                
-          </mat-form-field>
-        </div>
-  
-        <!-- Medical Information Section -->
-        <h3>Medical Information</h3>
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Blood Type</mat-label>
-            <mat-select formControlName="bloodType">
-                @for (type of bloodTypes; track type) {
-                    <mat-option [value]="type">{{ type }}</mat-option>
-                }              
-            </mat-select>
-          </mat-form-field>
-  
-          <!-- <mat-form-field appearance="outline">
-            <mat-label>Allergies</mat-label>
-            <textarea matInput formControlName="allergies" rows="2"></textarea>
-          </mat-form-field> -->
-        </div>
-  
-        <div class="form-row full-width">
-          <mat-form-field appearance="outline">
-            <mat-label>Medical History</mat-label>
-            <textarea matInput formControlName="medicalHistory" rows="3"></textarea>
-          </mat-form-field>
-        </div>
-  
-        <!-- Emergency Contact Section -->
-        <!-- <h3>Emergency Contact</h3>
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Emergency Contact Name</mat-label>
-            <input matInput formControlName="emergencyContactName" required>
-            <mat-error *ngIf="patientForm.get('emergencyContactName')?.hasError('required')">
-              Emergency contact name is required
-            </mat-error>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Emergency Contact Number</mat-label>
-            <input matInput formControlName="emergencyContactNumber" required>
-            <mat-error *ngIf="patientForm.get('emergencyContactNumber')?.hasError('required')">
-              Emergency contact number is required
-            </mat-error>
-            <mat-error *ngIf="patientForm.get('emergencyContactNumber')?.hasError('pattern')">
-              Please enter a valid phone number
-            </mat-error>
-          </mat-form-field>
-        </div> -->
-  
-        <!-- Insurance Information Section -->
-        <h3>Insurance Information</h3>
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Insurance Provider</mat-label>
-            <input matInput formControlName="insuranceProvider">
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Insurance Policy Number</mat-label>
-            <input matInput formControlName="insurancePolicyNumber">
-          </mat-form-field>
-        </div>
-  
-        <!-- Action Buttons -->
-        <div class="button-container">
-          <button mat-button type="button" (click)="goBack()">Cancel</button>
-          
-            <!-- @if (isSubmitting) { -->
-                <button mat-raised-button color="primary" type="submit">
-                    <mat-spinner diameter="20"></mat-spinner>
-                    <span>Register Patient</span>
-                </button>
-            <!-- }             -->
-        </div>
+      }
+      
+      <div class="button-row">
+        <button mat-raised-button color="primary" type="submit">Submit</button>
+        <!-- <button mat-button type="button" (click)="resetForm()">Reset</button> -->
       </div>
-    </form>
-  </div>
+    </div>
+  </form>        
+</div>

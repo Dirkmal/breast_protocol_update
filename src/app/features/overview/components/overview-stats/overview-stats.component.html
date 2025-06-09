@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-title">
         <span><mat-icon>person</mat-icon></span>
-        <h6>Patients</h6>
+        <h6>Patients</h6>        
       </div>
       <div class="card-body">
         <div class="flex items-start gap-4">
@@ -20,6 +20,16 @@
           <div class="grid">
             <p>95%</p>
             <small>Female</small>
+          </div>
+          <div class="grid">
+            <button
+              mat-raised-button
+              color="primary"
+              class="w-24"
+              routerLink="/patient/list"
+              routerLinkActive="router-link-active">
+              <mat-icon>person_add</mat-icon>Register
+            </button>
           </div>
         </div>
       </div>

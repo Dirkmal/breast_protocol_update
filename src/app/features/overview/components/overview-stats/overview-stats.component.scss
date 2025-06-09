@@ -9,9 +9,9 @@
 }
 
 .card {
-  border: 0.2px solid #b8b8b8;
+  border: 1px solid #ba005c;
   padding: 1rem;
-  border-radius: 1rem;
+  border-radius: 0.2em;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -25,7 +25,6 @@
       display: inline-flex;
       place-items: center;
       place-content: center;
-      background: #ebebeb;
     }
     h6 {
       margin: 0;
@@ -55,9 +54,13 @@
 }
 .trend_up {
   display: inline-flex;
-  background-color: #d2ffd2;
+  color: #09cf09;
   font-size: 0.825rem;
   padding: 0.25rem;
   margin-top: 0.5rem;
-  border: 0.2px solid #b8b8b8;
+  // border: 0.2px solid #ba005c;
+}
+
+.right {
+  float: right!important;
 }
