@@ -1,92 +1,111 @@
 <ng-container [ngSwitch]="control.controlType">
-    <!-- Input -->
-    <mat-form-field *ngSwitchCase="'input'" appearance="outline" [formGroup]="form">
-      <mat-label>{{ control.label | titlecase }}</mat-label>
-      <input
-        matInput        
-        [formControlName]="control.name"       
-        type="text"       
-      />
-              
-      @if (showError) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-      }      
-    </mat-form-field>
+  <!-- Input -->
+  <mat-form-field
+    *ngSwitchCase="'input'"
+    appearance="outline"
+    [formGroup]="form"
+  >
+    <mat-label>{{ control.label | titlecase }}</mat-label>
+    <input matInput [formControlName]="control.name" type="text" />
 
-    <!-- Number Input because Angular Material sends a string otherwise -->
-    <mat-form-field *ngSwitchCase="'number'" appearance="outline" [formGroup]="form">
-      <mat-label>{{ control.label | titlecase }}</mat-label>
-      <input
-        matInput        
-        [formControlName]="control.name"       
-        type="number"  
-        [value]="control.value"     
-      />
-              
-      @if (showError) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-      }      
-    </mat-form-field>
+    @if (showError) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+    }
+  </mat-form-field>
 
-     <!-- Date Input with Date Picker -->
-    <mat-form-field *ngSwitchCase="'date'" appearance="outline" [formGroup]="form">
-      <mat-label>{{ control.label | titlecase }}</mat-label>
-      <input
-        matInput
-        [formControlName]="control.name"        
-        [type]="control.type"
-        [matDatepicker]="picker"        
-      />
-    
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-              
-      @if (showError) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-      }      
-    </mat-form-field>
-  
-    <!-- Textarea -->
-    <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" [formGroup]="form">
-      <mat-label>{{ control.label | titlecase }}</mat-label>
-      <textarea
-        matInput
-        [formControlName]="control.name"
-        [placeholder]="control.placeholder"        
-        rows="4"
-      ></textarea>
-      @if (showError) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-      }
-    </mat-form-field>
-  
-    <!-- Select -->
-    <mat-form-field *ngSwitchCase="'select'" appearance="outline" [formGroup]="form">
-      <mat-label>{{ control.label | titlecase }}</mat-label>
-      <mat-select [formControlName]="control.name">
-        <mat-option
-          *ngFor="let option of control.options"
-          [value]="option"
-        >
-          {{ option | titlecase }}
-        </mat-option>
-      </mat-select>
-      @if (showError) {
-        <mat-error>{{ getErrorMessage() }}</mat-error>
-      }
-    </mat-form-field>
-  
-    <!-- Checkbox -->
-     <span [formGroup]="form">
-      <mat-checkbox
-        *ngSwitchCase="'checkbox'"
-        [formControlName]="control.name" 
-        [value]="control.value">
-        {{ control.label | titlecase }}
-      </mat-checkbox>
-      <mat-error *ngIf="showError && control.type === 'checkbox'" class="block text-red-500">
-          {{ getErrorMessage() }}
-      </mat-error>
+  <!-- Number Input because Angular Material sends a string otherwise -->
+  <mat-form-field
+    *ngSwitchCase="'number'"
+    appearance="outline"
+    [formGroup]="form"
+  >
+    <mat-label>{{ control.label | titlecase }}</mat-label>
+    <input
+      matInput
+      [formControlName]="control.name"
+      type="number"
+      [value]="control.value"
+    />
+
+    @if (showError) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Date Input with Date Picker -->
+  <mat-form-field
+    *ngSwitchCase="'date'"
+    appearance="outline"
+    [formGroup]="form"
+  >
+    <mat-label>{{ control.label | titlecase }}</mat-label>
+    <input
+      matInput
+      [formControlName]="control.name"
+      [type]="control.type"
+      [matDatepicker]="picker"
+    />
+
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+
+    @if (showError) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Textarea -->
+  <mat-form-field
+    *ngSwitchCase="'textarea'"
+    appearance="outline"
+    [formGroup]="form"
+  >
+    <mat-label>{{ control.label | titlecase }}</mat-label>
+    <textarea
+      matInput
+      [formControlName]="control.name"
+      [placeholder]="control.placeholder"
+      rows="4"
+    ></textarea>
+    @if (showError) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Select -->
+  <mat-form-field
+    *ngSwitchCase="'select'"
+    appearance="outline"
+    [formGroup]="form"
+  >
+    <mat-label>{{ control.label | titlecase }}</mat-label>
+    <mat-select [formControlName]="control.name">
+      <mat-option
+        *ngFor="let option of control.options"
+        [value]="isStringArray ? option : option.value"
+      >
+        {{ isStringArray ? (option | titlecase) : option.viewValue }}
+      </mat-option>
+    </mat-select>
+    @if (showError) {
+    <mat-error>{{ getErrorMessage() }}</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Checkbox -->
+  <span [formGroup]="form">
+    <mat-checkbox
+      *ngSwitchCase="'checkbox'"
+      [formControlName]="control.name"
+      [value]="control.value"
+    >
+      {{ control.label | titlecase }}
+    </mat-checkbox>
+    <mat-error
+      *ngIf="showError && control.type === 'checkbox'"
+      class="block text-red-500"
+    >
+      {{ getErrorMessage() }}
+    </mat-error>
   </span>
-  </ng-container>
-  
+</ng-container>

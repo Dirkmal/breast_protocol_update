@@ -10,9 +10,9 @@ export const reportPathologistReportSchema = {
     final_diagnosis: { type: 'string' },
     comment: { type: 'string' },
     consultant_pathologist: { type: 'string', maxLength: 255 },
-    date_of_request: { type: 'string', format: 'date' },
-    date_received: { type: 'string', format: 'date' },
-    date_reviewed: { type: 'string', format: 'date' },
+    date_of_request: { type: 'string' },
+    date_received: { type: 'string' },
+    date_reviewed: { type: 'string' },
   },
   required: [
     'id',

@@ -9,7 +9,7 @@ export const reportInvasiveCarcinomaSchema = {
     report_id: { type: 'string', maxLength: 36 },
     ic_present: { type: 'boolean' },
     invasive_tumor_size: { type: 'number' },
-    whole_size_tumor: { type: 'number' },
+    whole_tumor_size: { type: 'number' },
     ic_type: { type: 'string' },
     invasive_grade: { type: 'string' },
     sbr_score: { type: 'integer' },

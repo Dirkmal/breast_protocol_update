@@ -1,6 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, Input } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
 import { MaterialModule } from '../../material.module';
 
 @Component({
@@ -8,7 +9,7 @@ import { MaterialModule } from '../../material.module';
   imports: [MaterialModule, ReactiveFormsModule, CommonModule],
   templateUrl: './dynamic-form-control.component.html',
   styleUrl: './dynamic-form-control.component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DynamicFormControlComponent {
   @Input() control: any;
@@ -18,7 +19,7 @@ export class DynamicFormControlComponent {
   ngOnInit(): void {
     if (this.control?.value !== undefined) {
       this.formControl.setValue(this.control.value);
-    }      
+    }
   }
 
   getformControl() {
@@ -40,5 +41,10 @@ export class DynamicFormControlComponent {
     if (control.errors['requiredTrue']) return 'You must accept the terms';
 
     return 'Invalid value';
+  }
+
+  get isStringArray(): boolean {
+    const options = this.control.options;
+    return typeof options?.[0] === 'string';
   }
 }
