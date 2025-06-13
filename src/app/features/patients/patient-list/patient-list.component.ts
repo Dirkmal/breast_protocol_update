@@ -82,9 +82,14 @@ export class PatientListComponent implements OnInit {
   // }
 
   openPatientForm(patient?: Patient): void {
+    
     const dialogRef = this.dialog.open(PatientFormComponent, {
-      width: '800px',
+      width: '400px',
       height: '100%',
+      position: {
+        right: '0px',
+        top: '0px' // Optional: position on the top
+      },
       data: { patient }
     });
 

@@ -3,7 +3,6 @@
   
   <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
     <div class="form-container">      
-      <h3>Patient Information</h3>
       @for (pc of patient_controls; track pc) {
         <div class="form-row">
           <app-dynamic-form-control [control]="pc" [form]="patientForm">

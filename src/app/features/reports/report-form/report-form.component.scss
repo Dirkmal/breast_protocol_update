@@ -1,70 +1,74 @@
 .patient-report-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  
+  h2 {
+    color: #3f51b5;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .form-row {
+    margin-bottom: 16px;
     
-    h2 {
-      color: #3f51b5;
-      margin-bottom: 24px;
-      text-align: center;
+    ::ng-deep mat-form-field {
+      width: 100%;
     }
+  }
+  
+  .form-section {
+    margin-bottom: 24px;
     
-    .form-row {
-      margin-bottom: 16px;
-      
-      ::ng-deep mat-form-field {
-        width: 100%;
-      }
+    h3 {
+      color: #555;
+      margin-bottom: 12px;
+      font-weight: 500;
     }
+  }
+  
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
     
-    .form-section {
-      margin-bottom: 24px;
-      
-      h3 {
-        color: #555;
-        margin-bottom: 12px;
-        font-weight: 500;
-      }
+    mat-checkbox {
+      display: block;
     }
+  }
+  
+  .dimensions-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
     
-    .checkbox-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      
-      mat-checkbox {
-        display: block;
-      }
-    }
-    
-    .dimensions-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      
-      @media (max-width: 600px) {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .dimensions-container-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      
-      @media (max-width: 600px) {
-        grid-template-columns: 1fr;
-      }
-    }
-    
-    .button-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 16px;
-      margin-top: 24px;
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
     }
   }
 
-  .mat-horizontal-content-container {
-    padding-top: 10px!important;
+  .dimensions-container-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
   }
+  
+  .button-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+  }
+}
+
+.mat-horizontal-content-container {
+  padding-top: 10px!important;
+}
+
+.mat-stepper-horizontal {
+  background-color: transparent;
+}
