@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home2/breastca/public_html/
+    - /bin/cp -a dist/breast_protocol_app/. $DEPLOYPATH
