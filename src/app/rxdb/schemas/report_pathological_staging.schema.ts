@@ -11,8 +11,8 @@ export const reportPathologicalStagingSchema = {
     pt: { type: 'integer' },
     n: { type: 'integer' },
     m: { type: 'integer' },
-    updated_at: { type: 'number' },
-    created_at: { type: 'number' },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id', 'pt', 'n', 'm'],
 };

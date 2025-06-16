@@ -14,8 +14,8 @@ export const reportInitialDetailsSchema = {
     referring_clinician: { type: 'string' },
     reporting_date: { type: 'string' },
     side: { type: 'string' },
-    updated_at: { type: 'number' },
-    created_at: { type: 'number' },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: [
     'id',

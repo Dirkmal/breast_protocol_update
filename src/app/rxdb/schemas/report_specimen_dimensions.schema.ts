@@ -11,8 +11,8 @@ export const reportSpecimenDimensionsSchema = {
     length: { type: 'number' },
     width: { type: 'number' },
     height: { type: 'number' },
-    updated_at: { type: 'number' },
-    created_at: { type: 'number' },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id', 'weight', 'length', 'width', 'height'],
 };

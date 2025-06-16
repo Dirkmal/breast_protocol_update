@@ -16,8 +16,8 @@ export const reportInvasiveCarcinomaSchema = {
     tumour_extent: { type: 'string' },
     lympho_vascular_invasion: { type: 'string' },
     site_of_other_nodes: { type: 'string' },
-    updated_at: { type: 'number' },
-    created_at: { type: 'number' },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id'],
 };

@@ -15,4 +15,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   exit();
 }
 
-require("/./router/index.php");
+require("./v1/router/index.php");

@@ -5,9 +5,6 @@
 export const environment = {
   production: false,
   apiUrl: 'localhost/api/v1',
-  supabaseUrl: 'https://jkopnuuihyxjpnpftmxc.supabase.co',
-  supabaseKey:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imprb3BudXVpaHl4anBucGZ0bXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3MDQzMjYsImV4cCI6MjA2MjI4MDMyNn0.aHwwQe0PYuLJDrFxdawaV8ZWakA4OFshCFHBnhXUMnA',
 };
 
 /*
