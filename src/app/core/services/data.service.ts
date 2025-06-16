@@ -74,7 +74,7 @@ export class ReportsService {
       map(() => id),
       catchError((error) => {
         console.error('Failed to create report:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -127,7 +127,7 @@ export class ReportsService {
       map(() => true),
       catchError((error) => {
         console.error('Failed to update report:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -148,7 +148,7 @@ export class ReportsService {
       map(() => true),
       catchError((error) => {
         console.error('Failed to delete report:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -158,13 +158,58 @@ export class ReportsService {
    */
   getAllReports(): Observable<Report[]> {
     return from(this.databaseService.db).pipe(
-      switchMap((db) => {
-        return from(db['reports'].find().exec());
-      }),
-      map((docs) => docs.map((doc) => doc.toJSON())),
+      switchMap((db) =>
+        from(db['reports'].find().exec()).pipe(
+          map((docs) => docs.map((doc) => doc.toJSON())),
+          switchMap((localReports) =>
+            this.http.get<Report[]>(this.apiUrl).pipe(
+              map((remoteReports) => {
+                const mergedReports: Report[] = [];
+
+                // Create a Map of remote reports for quick access
+                const remoteMap = new Map(remoteReports.map((r) => [r.id, r]));
+
+                const localIds = new Set(localReports.map((r) => r.id));
+
+                // Merge or resolve conflicts
+                localReports.forEach((local) => {
+                  const remote = remoteMap.get(local.id);
+                  if (!remote) {
+                    // unsynced local report
+                    mergedReports.push(local);
+                  } else {
+                    // Resolve conflict by updated_at
+                    const localDate = new Date(local.updated_at).getTime();
+                    const remoteDate = new Date(remote.updated_at).getTime();
+                    mergedReports.push(
+                      localDate >= remoteDate ? local : remote
+                    );
+
+                    // Remove from map to avoid re-processing
+                    remoteMap.delete(local.id);
+                  }
+                });
+
+                // Add remaining remote reports (not in local)
+                for (const remaining of remoteMap.values()) {
+                  mergedReports.push(remaining);
+                }
+
+                return mergedReports;
+              }),
+              catchError((error) => {
+                console.warn(
+                  `Backend fetch failed. Showing local reports only: ${error}`
+                );
+                return of(localReports); // fallback to local
+              })
+            )
+          )
+        )
+      ),
       catchError((error) => {
-        console.error('Failed to get all reports:', error);
-        return throwError(error);
+        console.error('Failed to get all reports from local DB:', error);
+        return throwError(() => error);
       })
     );
   }
@@ -192,7 +237,7 @@ export class ReportsService {
       map((docs) => docs.map((doc) => doc.toJSON())),
       catchError((error) => {
         console.error('Failed to get unsynced reports:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -229,7 +274,7 @@ export class ReportsService {
       }),
       catchError((error) => {
         console.error('Failed to sync pending reports:', error);
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
@@ -503,7 +548,7 @@ export class ReportsService {
 
   private handleError = (error: any): Observable<never> => {
     console.error('API Error:', error);
-    return throwError(error);
+    return throwError(() => error);
   };
 
   private coerceBoolean(value: any): boolean {
