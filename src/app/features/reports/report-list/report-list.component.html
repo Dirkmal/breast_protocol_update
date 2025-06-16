@@ -2,7 +2,7 @@
 <div class="patient-list-container">
     <div class="header-container">
       <h1>Reports</h1>
-      <a mat-raised-button color="primary"
+      <a 
       routerLink="/report/list" >
         <mat-icon>add</mat-icon>
         Create a new Report
@@ -14,7 +14,7 @@
         <div class="filter-container">
           <mat-form-field appearance="outline">
             <mat-label>Filter</mat-label>
-            <!-- <input matInput (keyup)="applyFilter($event)" placeholder="Search patients"> -->
+            <input matInput (keyup)="applyFilter($event)" placeholder="Search patients">
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
         </div>

@@ -29,7 +29,7 @@ export class ReportListComponent {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private rs: ReportsService,
+    private ds: ReportsService,
     private snackBar: MatSnackBar,
   ) {}
 
@@ -61,7 +61,7 @@ export class ReportListComponent {
 
   loadReports(): void {
     this.loading = true;
-    this.rs.getAllReports().subscribe({
+    this.ds.getAllReports().subscribe({
       next: (reports) => {
         this.dataSource.data = reports;
         this.loading = false;

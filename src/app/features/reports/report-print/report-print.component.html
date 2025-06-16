@@ -1,1 +1,288 @@
-<p>report-print works!</p>
+<mat-card id="print_page" class="container" *ngIf="report">	
+	<div id="printable_section">	  
+		<mat-card-title class="text-center">
+			Breast Cancer Report
+		</mat-card-title>						
+
+		<div class="row">
+			<div>
+				<b>Histology Number: </b> {{ report.patient.histology_num }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div>
+				<b>Patient: </b> {{ report.patient | fullname | uppercase }}
+			</div>
+			
+			<div>
+				<b>Age: </b> {{ report.patient.age }}
+			</div>
+	
+			<div>
+				<b>Sex: </b> {{ report.patient.gender }}
+			</div>
+		
+			<div *ngIf="report.patient.hospital_number">
+				<b>Hospital number: </b> {{ report.patient.hospital_number }}
+			</div>
+
+			<div *ngIf="report.patient.nhis_number">
+				<b>NHIS number: </b> {{ report.patient.nhis_number }}
+			</div>
+
+			<div *ngIf="report.initial_details.ref_hospital">
+				<b>Referring Hospital: </b> {{ report.initial_details.ref_hospital | titlecase }}
+			</div>
+
+			<div *ngIf="report.initial_details.ref_clinician">
+				<b>Referring Clinician: </b> {{ report.initial_details.ref_clinician | titlecase }}
+			</div>
+		</div>
+	
+		<hr>
+
+		<h3 class="heading">
+			MACROSCOPY
+		</h3> 
+
+		<div class="row">
+			<div>
+				<b>Specimen Type: </b>
+
+				<span *ngFor="let st of report.macroscopy.specimen_type | onlyTrueKeys ">						
+					{{ st | removeUnderscore | capitaliseFirst }}, 						
+				</span>					
+			</div>
+		
+			<div>
+				<b>Specimen Dimension: </b>
+				{{ report.macroscopy.specimen_dimensions.x + 'mm x ' 
+					+ report.macroscopy.specimen_dimensions.y + 'mm x '
+					+ report.macroscopy.specimen_dimensions.z  }}mm
+			</div>
+
+			<div>
+				<b>Specimen Weight: </b> {{ report.macroscopy.specimen_dimensions.weight || '-' }}g
+			</div>
+		</div>
+
+		<div class="row">
+			<div>
+				<b>Axillary Procedure: </b>
+				
+				<span *ngFor="let ap of report.macroscopy.axillary_procedure | onlyTrueKeys ">						
+					{{ ap | removeUnderscore | capitaliseFirst }}, 						
+				</span>	
+			</div>				
+		</div>
+
+		<hr>
+
+		<h3 class="heading">
+			MICROSCOPY
+		</h3>
+
+		<div class="row" *ngIf="report.microscopy.in_situ_carcinoma.ductal_carcinoma_in_situ">
+			<div>
+				<b>Carcinoma In situ </b> 
+			</div>
+		</div>	
+				
+		<div class="row">
+			<div *ngIf="report.microscopy.in_situ_carcinoma.ductal_carcinoma_in_situ">
+				<b>DCIS size: </b>
+				{{ report.microscopy.in_situ_carcinoma.ductal_carcinoma_in_situ || '-' }}g
+			</div>
+
+			<div  *ngIf="report.microscopy.in_situ_carcinoma.lobular_carcinoma_in_situ">
+				Lobular carcinoma in-situ present
+			</div>
+
+			<div  *ngIf="report.microscopy.in_situ_carcinoma.paget_disease">
+				Paget disease present
+			</div>
+		
+			<div *ngIf="report.microscopy.micro_invasion.microinvasion">	
+				Microinvasion present
+			</div>
+		</div>
+
+		<hr *ngIf="report.microscopy_2.invasive_carcinoma.ic_present">
+		<!-- Microscopy 2 -->
+		<div class="row" *ngIf="report.microscopy_2.invasive_carcinoma.ic_present">
+			<div>
+				<b>Invasive carcinoma size: </b>
+				{{ report.microscopy_2.invasive_carcinoma.invasive_tumor || '-' }}
+			</div>
+
+			<div>
+				<b>Invasive carcinoma type: </b> {{ report.microscopy_2.invasive_carcinoma.type | capitaliseFirst }}
+			</div>
+
+			<div>
+				<b>Whole size tumor: </b> {{ report.microscopy_2.invasive_carcinoma.whole_size_tumor || '-' }}g
+			</div>
+		
+			<div>
+				<b>Invasive grade: </b> {{ report.microscopy_2.m2_more.invasive_grade || '-' }}
+			</div>
+			
+			<div>
+				<b>SBR score: </b> {{ report.microscopy_2.m2_more.sbr_score || '-' }}
+			</div>
+
+			<div>
+				<b>Tumor extent: </b> {{ report.microscopy_2.m2_more.tumour_extent || '-' | capitaliseFirst }}
+			</div>
+		
+			<div>
+				<b>Lympho vascular invasion: </b> {{ report.microscopy_2.m2_more.lympho_vascular_invasion }}
+			</div>
+
+			<div>
+				<b>Site of other nodes: </b> {{ report.microscopy_2.m2_more.site_of_other_nodes || '-' | capitaliseFirst}}
+			</div>
+		</div>
+
+		<div class="row" *ngIf="report.microscopy_2.axillary_node.an_present">
+			<div>
+				<b>Axillary nodes present: </b> {{ report.microscopy_2.axillary_node.total_number }}
+			</div>
+
+			<div>
+				<b>Positive nodes: </b> {{ report.microscopy_2.axillary_node.number_positive }}
+			</div>
+		</div>
+
+		<hr>
+		<!-- microscopy 3 -->
+		<div class="row">
+			<div>
+				<b>Excision margins: </b> {{ report.microscopy_3.excision_margins || "None" | capitaliseFirst }}
+			</div>
+
+			<div>
+				<b>Skin involvement: </b> {{ report.microscopy_3.skin_involvement || "None" | capitaliseFirst }}
+			</div>
+
+			<div>
+				<b>Nipple involvement: </b> {{ report.microscopy_3.nipple_involvement ? "Present" : "None " }}
+			</div>
+		
+			<div>
+				<b>Skeletal muscle involvement: </b> {{ report.microscopy_3.skeletal_muscle_involvement ? "Present" : "None " }}
+			</div>
+
+			<div>
+				<b>Surgical margins: </b> {{ report.microscopy_3.surgical_margins.margins || "None" }}
+			</div>
+
+			<div>
+				<b>Margins: </b>
+				<span *ngFor="let m of report.microscopy_3.surgical_margins | onlyTrueKeys ">						
+					{{ m | titlecase }},
+				</span>	
+			</div>
+		</div>
+
+		<div class="row" *ngIf="report.microscopy_3.pathological_staging.not_applicable === false">
+			<div>
+				<b>Pathological staging: </b>
+				<i>pT: </i>{{ report.microscopy_3.pathological_staging.pt }}
+				<i>N: </i>{{ report.microscopy_3.pathological_staging.n }}
+				<i>M: </i>{{ report.microscopy_3.pathological_staging.m }}
+			</div>
+		</div>
+
+		<hr>
+
+		<h3 class="heading">
+			IMMUNOHISTOCHEMISTRY
+		</h3>
+
+		<div class="row">
+			<div>
+				<b>Oestrogen receptor status: </b>
+				{{ report.ihc.oestrogen_receptor_status || "---" }}
+			</div>
+			
+			<div>
+				<b>PR: </b>
+				{{ report.ihc.pr || "---" }}
+			</div>
+			
+			<div>
+				<b>HER2: </b>
+				{{ report.ihc.her2 || "---" }}
+			</div>
+		
+			<div>
+				<b>Quick All-red Score: </b>
+				{{ report.ihc.quick_allred_score || "---" }}
+			</div>
+		</div>
+
+		<hr>
+
+		<h3 class="heading">
+			PATHOLOGIST'S REPORT
+		</h3>
+
+		<div class="row">
+			<div>
+				<b>Consultant Pathologist: </b>
+				{{ report.pathologist_report.consultant_pathologist | titlecase }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div>
+				<b>Final Diagnosis: </b>
+				{{ report.pathologist_report.final_diagnosis | titlecase }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div>
+				<b>Comment: </b>
+				{{ report.pathologist_report.comment | titlecase }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div>
+				<b>Date of request: </b>
+				{{ report.pathologist_report.date_of_request }}
+			</div>
+
+			<div>
+				<b>Date received: </b>
+				{{ report.pathologist_report.date_received }}
+			</div>
+
+			<div>
+				<b>Date reviewed: </b>
+				{{ report.pathologist_report.date_reviewed }}
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div>
+				<button mat-raised-button color="primary" (click)="generatePdf()">
+					DOWNLOAD PDF
+				</button>
+			</div>
+		
+			<div>
+				<button mat-raised-button color="primary">
+                 <!-- [routerLink]="['/report/' + report._id]" -->
+					EDIT
+				</button>
+			</div>
+		</div>
+	</div>
+</mat-card>
+

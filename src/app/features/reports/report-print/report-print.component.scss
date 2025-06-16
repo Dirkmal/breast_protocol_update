@@ -1,0 +1,32 @@
+#printable_section {
+	padding: 2em;	
+	font-family: 'Times New Roman', Times, serif;	
+	font-size: 24px;
+	margin: auto;
+	margin-bottom: 60px;	
+}
+
+.heading {
+	text-align: center;
+	font-weight: 700;
+}
+
+ .row {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-gap: 1em;
+	margin: 1em 0;
+}
+
+ b,   .heading,   mat-card-title {
+	font-family: 'Roboto';
+}
+
+ b {
+	font-size: 20px;
+	letter-spacing: .5px;
+}
+
+ i {
+	font-weight: 600;
+}
