@@ -76,7 +76,7 @@ CREATE TABLE report_invasive_carcinoma (
     report_id CHAR(36) NOT NULL,
     ic_present BOOLEAN,
     invasive_tumor_size DECIMAL(5,2),
-    whole_tumor_size DECIMAL(5,2),
+    whole_size_tumor DECIMAL(5,2),
     ic_type VARCHAR(100),
     invasive_grade VARCHAR(10),
     sbr_score INT,
@@ -154,6 +154,42 @@ CREATE TABLE report_pathologist_report (
     date_received DATE NOT NULL,
     date_reviewed DATE NOT NULL,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
+);
+
+-- Institutions
+CREATE TABLE hospitals (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  address VARCHAR(255),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Patients
+CREATE TABLE patients (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  hospital_number INT NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  date_of_birth DATE NOT NULL,
+  gender VARCHAR(10) NOT NULL,
+  contact_number VARCHAR(20) NOT NULL,
+  insurance_provider VARCHAR(100),
+  insurance_number VARCHAR(100),
+  email VARCHAR(150),
+  address TEXT,
+  blood_group VARCHAR(5),
+  medical_history TEXT,
+  created_by INT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (hospital_number) REFERENCES hospitals(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+  FOREIGN KEY (created_by) REFERENCES patients(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
 );
 
 -- Create indexes for better performance
