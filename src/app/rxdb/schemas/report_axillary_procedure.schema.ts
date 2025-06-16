@@ -12,6 +12,8 @@ export const reportAxillaryProcedureSchema = {
     sentinel_node_biopsy: { type: 'boolean', default: false },
     axillary_node_clearance: { type: 'boolean', default: false },
     intrammary_node: { type: 'boolean', default: false },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id'],
 };

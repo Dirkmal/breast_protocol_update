@@ -10,6 +10,8 @@ export const reportAxillaryNodeSchema = {
     an_present: { type: 'boolean' },
     total_number: { type: 'integer' },
     number_positive: { type: 'integer' },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id'],
 };

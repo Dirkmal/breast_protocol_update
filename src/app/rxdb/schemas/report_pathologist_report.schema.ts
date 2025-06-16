@@ -13,6 +13,8 @@ export const reportPathologistReportSchema = {
     date_of_request: { type: 'string' },
     date_received: { type: 'string' },
     date_reviewed: { type: 'string' },
+    updated_at: { type: 'number' },
+    created_at: { type: 'number' },
   },
   required: [
     'id',

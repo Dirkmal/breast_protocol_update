@@ -20,6 +20,8 @@ CREATE TABLE report_initial_details (
     side VARCHAR(10),
     date_typed DATE,
     typed_by VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -33,6 +35,8 @@ CREATE TABLE report_specimen_type (
     open_biopsy BOOLEAN DEFAULT FALSE,
     segmental_excision BOOLEAN DEFAULT FALSE,
     wide_bore_needle_biopsy BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -44,6 +48,8 @@ CREATE TABLE report_specimen_dimensions (
     length DECIMAL(10,2) NOT NULL,
     width DECIMAL(10,2) NOT NULL,
     height DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -56,6 +62,8 @@ CREATE TABLE report_axillary_procedure (
     sentinel_node_biopsy BOOLEAN DEFAULT FALSE,
     axillary_node_clearance BOOLEAN DEFAULT FALSE,
     intrammary_node BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -67,6 +75,8 @@ CREATE TABLE report_in_situ_carcinoma (
     lobular_carcinoma_in_situ BOOLEAN DEFAULT FALSE,
     paget_disease BOOLEAN DEFAULT FALSE,
     microinvasion BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -83,6 +93,8 @@ CREATE TABLE report_invasive_carcinoma (
     tumour_extent VARCHAR(20),
     lympho_vascular_invasion VARCHAR(20),
     site_of_other_nodes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -93,6 +105,8 @@ CREATE TABLE report_axillary_node (
     an_present BOOLEAN,
     total_number INT,
     number_positive INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -105,6 +119,8 @@ CREATE TABLE report_margin (
     nipple_involvement BOOLEAN,
     skeletal_muscle_involvement VARCHAR(10),
     surgical_margins VARCHAR(10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -118,6 +134,8 @@ CREATE TABLE report_other_margins (
     posterior BOOLEAN DEFAULT FALSE,
     lateral BOOLEAN DEFAULT FALSE,
     medial BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -129,6 +147,8 @@ CREATE TABLE report_pathological_staging (
     pt INT NOT NULL,
     n INT NOT NULL,
     m INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -140,6 +160,8 @@ CREATE TABLE report_ihc (
     pr VARCHAR(10) NOT NULL,
     her2 VARCHAR(10) NOT NULL,
     quick_allred_score INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
@@ -153,6 +175,8 @@ CREATE TABLE report_pathologist_report (
     date_of_request DATE NOT NULL,
     date_received DATE NOT NULL,
     date_reviewed DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (report_id) REFERENCES reports(id) ON DELETE CASCADE
 );
 
