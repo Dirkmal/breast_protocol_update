@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { environment } from '../../../environments/environment';
 import { DatabaseService } from '../../rxdb/rxdb.service';
 import {
   IHC,
@@ -17,19 +16,19 @@ import {
   SurgicalMargins,
 } from '../models/report.model';
 
-// Interfaces
-
 interface ApiResponse<T> {
   success: boolean;
-  data?: T;
-  message?: string;
+  data: {
+    data: T;
+  };
+  error?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReportsService {
-  private readonly apiUrl = `http://${environment.apiUrl}/reports`;
+  private readonly apiUrl = '/api/v1/reports';
   private readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -162,12 +161,14 @@ export class ReportsService {
         from(db['reports'].find().exec()).pipe(
           map((docs) => docs.map((doc) => doc.toJSON())),
           switchMap((localReports) =>
-            this.http.get<Report[]>(this.apiUrl).pipe(
+            this.http.get<ApiResponse<Report[]>>(this.apiUrl).pipe(
               map((remoteReports) => {
                 const mergedReports: Report[] = [];
 
                 // Create a Map of remote reports for quick access
-                const remoteMap = new Map(remoteReports.map((r) => [r.id, r]));
+                const remoteMap = new Map(
+                  remoteReports.data.data.map((r) => [r.id, r])
+                );
 
                 const localIds = new Set(localReports.map((r) => r.id));
 
@@ -199,8 +200,9 @@ export class ReportsService {
               }),
               catchError((error) => {
                 console.warn(
-                  `Backend fetch failed. Showing local reports only: ${error}`
+                  `Backend fetch failed. Showing local reports only`
                 );
+                console.error({ error });
                 return of(localReports); // fallback to local
               })
             )
@@ -461,9 +463,7 @@ export class ReportsService {
         ApiResponse<{
           message: string;
           status: string;
-          data: {
-            report_id: string;
-          };
+          report_id: string;
         }>
       >(`${this.apiUrl}`, cleanReport, this.httpOptions)
       .pipe(
@@ -472,7 +472,7 @@ export class ReportsService {
           if (response.success && response.data) {
             return response.data.data.report_id;
           }
-          throw new Error(response.message || 'Failed to create report');
+          throw new Error(response?.error || 'Failed to create report');
         }),
         catchError(this.handleError)
       );
@@ -483,9 +483,9 @@ export class ReportsService {
       retry(1),
       map((response) => {
         if (response.success && response.data) {
-          return this.transformDatesFromApi(response.data);
+          return this.transformDatesFromApi(response.data.data);
         }
-        throw new Error(response.message || 'Report not found');
+        throw new Error(response?.error || 'Report not found');
       }),
       catchError(this.handleError)
     );
@@ -508,7 +508,7 @@ export class ReportsService {
           if (response.success) {
             return true;
           }
-          throw new Error(response.message || 'Failed to update report');
+          throw new Error(response?.error || 'Failed to update report');
         }),
         catchError(this.handleError)
       );
@@ -521,7 +521,7 @@ export class ReportsService {
         if (response.success) {
           return true;
         }
-        throw new Error(response.message || 'Failed to delete report');
+        throw new Error(response?.error || 'Failed to delete report');
       }),
       catchError(this.handleError)
     );

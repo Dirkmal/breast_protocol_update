@@ -1,26 +1,28 @@
-import { Component, ViewChild } from '@angular/core';
-import { MaterialModule } from '../../../shared/material.module';
 import { CommonModule } from '@angular/common';
-import { MatTableDataSource } from '@angular/material/table';
-import { Report } from '../../../core/models/report.model';
+import { Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { ReportsService } from '../../../core/services/data.service';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { RouterLink, RouterModule } from '@angular/router';
+
+import { Report } from '../../../core/models/report.model';
+import { ReportsService } from '../../../core/services/data.service';
+import { MaterialModule } from '../../../shared/material.module';
 
 @Component({
   selector: 'app-report-list',
-  imports: [MaterialModule, CommonModule],
+  imports: [MaterialModule, CommonModule, RouterModule, RouterLink],
   templateUrl: './report-list.component.html',
-  styleUrl: './report-list.component.scss'
+  styleUrl: './report-list.component.scss',
 })
 export class ReportListComponent {
   displayedColumns: string[] = [
     'Report ID',
-    'Patient Name', 
-    'Hospital Number', 
-    'actions'
+    'Patient Name',
+    'Hospital Number',
+    'Gender',
+    'Actions',
   ];
   dataSource = new MatTableDataSource<Report>([]);
   loading = false;
@@ -28,10 +30,7 @@ export class ReportListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(
-    private ds: ReportsService,
-    private snackBar: MatSnackBar,
-  ) {}
+  constructor(private ds: ReportsService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadReports();
@@ -40,7 +39,7 @@ export class ReportListComponent {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    
+
     // Custom sort function for full name
     // this.dataSource.sortingDataAccessor = (item, property) => {
     //   switch(property) {
@@ -67,13 +66,13 @@ export class ReportListComponent {
         this.loading = false;
       },
       error: (error) => {
-        this.snackBar.open('Failed to load reports', 'Close', { duration: 5000 });
+        this.snackBar.open('Failed to load reports', 'Close', {
+          duration: 5000,
+        });
         this.loading = false;
-      }
+      },
     });
   }
-
-  
 
   // createReport(patientId: string): void {
   //   this.router.navigate(['/reports/new'], { queryParams: { patientId } });

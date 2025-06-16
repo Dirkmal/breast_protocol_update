@@ -2,9 +2,9 @@
 
 # Ensure the request is not for an actual file or directory
 # Don’t rewrite files or directories
-#RewriteCond %{REQUEST_FILENAME} -f [OR]
-#RewriteCond %{REQUEST_FILENAME} -d
-#RewriteRule ^ - [L]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
 # Rewrite everything else to index.html
-#RewriteRule ^ index.html [L]
+RewriteRule ^ index.php [L]

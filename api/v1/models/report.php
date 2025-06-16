@@ -56,40 +56,6 @@ class Report
     }
   }
 
-  private function insertInitialDetails($reportId, $data)
-  {
-    if (empty($data)) return;
-
-    $stmt = $this->pdo->prepare("INSERT INTO $this->report_initial_details (report_id, hospital_number, histology_number, referring_hospital,  referring_clinician, reporting_date, side, date_typed, typed_by) VALUES (:report_id, :hospital_number, :histology_number, :referring_hospital, :referring_clinician, :reporting_date, :side, :date_typed, :typed_by)");
-
-    $stmt->execute([
-      ':report_id' => $reportId,
-      ':hospital_number' => $data['hospital_number'] ?? null,
-      ':histology_number' => $data['histology_number'] ?? '',
-      ':referring_hospital' => $data['referring_hospital'] ?? null,
-      ':referring_clinician' => $data['referring_clinician'] ?? null,
-      ':reporting_date' => $data['reporting_date'] ?? null,
-      ':side' => $data['side'] ?? null,
-      ':date_typed' => $data['date_typed'] ?? null,
-      ':typed_by' => $data['typed_by'] ?? null
-    ]);
-  }
-
-  private function insertIHC($reportId, $data)
-  {
-    if (empty($data)) return;
-
-    $stmt = $this->pdo->prepare("INSERT INTO $this->report_ihc (report_id, oestrogen_receptor_status, pr, her2, quick_allred_score) VALUES (:report_id, :oestrogen_receptor_status, :pr, :her2, :quick_allred_score)");
-
-    $stmt->execute([
-      ':report_id' => $reportId,
-      ':oestrogen_receptor_status' => $data['oestrogen_receptor_status'],
-      ':pr' => $data['pr'],
-      ':her2' => $data['her2'],
-      ':quick_allred_score' => $data['quick_allred_score']
-    ]);
-  }
-
   private function getInitialDetails($reportId)
   {
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_initial_details WHERE report_id = :report_id");
@@ -180,30 +146,72 @@ class Report
     }
   }
 
+  private function insertInitialDetails($reportId, $data)
+  {
+    if (empty($data) || empty($data["initial_details"])) return;
+
+    $initial_details = $data["initial_details"];
+
+    $stmt = $this->pdo->prepare("INSERT INTO $this->report_initial_details (report_id, hospital_number, histology_number, referring_hospital,  referring_clinician, reporting_date, side, date_typed, typed_by) VALUES (:report_id, :hospital_number, :histology_number, :referring_hospital, :referring_clinician, :reporting_date, :side, :date_typed, :typed_by)");
+
+    $stmt->execute([
+      ':report_id' => $reportId,
+      ':hospital_number' => $initial_details['hospital_number'] ?? null,
+      ':histology_number' => $initial_details['histology_number'] ?? '',
+      ':referring_hospital' => $initial_details['referring_hospital'] ?? null,
+      ':referring_clinician' => $initial_details['referring_clinician'] ?? null,
+      ':reporting_date' => $initial_details['reporting_date'] ?? null,
+      ':side' => $initial_details['side'] ?? null,
+      ':date_typed' => $initial_details['date_typed'] ?? null,
+      ':typed_by' => $initial_details['typed_by'] ?? null
+    ]);
+  }
+
+  private function insertIHC($reportId, $data)
+  {
+    if (empty($data) || empty($data["ihc"])) return;
+
+    $ihc = $data["ihc"];
+
+    $stmt = $this->pdo->prepare("INSERT INTO $this->report_ihc (report_id, oestrogen_receptor_status, pr, her2, quick_allred_score) VALUES (:report_id, :oestrogen_receptor_status, :pr, :her2, :quick_allred_score)");
+
+    $stmt->execute([
+      ':report_id' => $reportId,
+      ':oestrogen_receptor_status' => $ihc['oestrogen_receptor_status'],
+      ':pr' => $ihc['pr'],
+      ':her2' => $ihc['her2'],
+      ':quick_allred_score' => $ihc['quick_allred_score']
+    ]);
+  }
+
   private function insertPathologistReport($reportId, $data)
   {
-    if (empty($data)) return;
+    if (empty($data) || empty($data["pathologist_report"])) return;
+
+    $report = $data["pathologist_report"];
 
     $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathologist_report (report_id, final_diagnosis, comment, consultant_pathologist, date_of_request, date_received, date_reviewed) VALUES (:report_id, :final_diagnosis, :comment, :consultant_pathologist, :date_of_request, :date_received, :date_reviewed)");
 
     $stmt->execute([
       ':report_id' => $reportId,
-      ':final_diagnosis' => $data['final_diagnosis'],
-      ':comment' => $data['comment'],
-      ':consultant_pathologist' => $data['consultant_pathologist'],
-      ':date_of_request' => $data['date_of_request'],
-      ':date_received' => $data['date_received'],
-      ':date_reviewed' => $data['date_reviewed']
+      ':final_diagnosis' => $report['final_diagnosis'],
+      ':comment' => $report['comment'],
+      ':consultant_pathologist' => $report['consultant_pathologist'],
+      ':date_of_request' => $report['date_of_request'],
+      ':date_received' => $report['date_received'],
+      ':date_reviewed' => $report['date_reviewed']
     ]);
   }
 
   private function insertMacroscopy($reportId, $data)
   {
-    if (empty($data)) return;
+    if (empty($data) || empty($data["macroscopy"])) return;
+
+    $macroscopy = $data["macroscopy"];
 
     // Specimen Type
-    if (!empty($data['specimen_type'])) {
-      $st = $data['specimen_type'];
+    if (!empty($macroscopy['specimen_type'])) {
+      $st = $macroscopy['specimen_type'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_specimen_type (report_id, core_needle_biopsy, wide_local_excision, mastectomy, open_biopsy, segmental_excision, wide_bore_needle_biopsy) VALUES (:report_id, :core_needle_biopsy, :wide_local_excision, :mastectomy, :open_biopsy, :segmental_excision, :wide_bore_needle_biopsy)");
 
       $stmt->execute([
@@ -218,8 +226,8 @@ class Report
     }
 
     // Specimen Dimensions
-    if (!empty($data['specimen_dimensions'])) {
-      $sd = $data['specimen_dimensions'];
+    if (!empty($macroscopy['specimen_dimensions'])) {
+      $sd = $macroscopy['specimen_dimensions'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_specimen_dimensions (report_id, weight, length, width, height) VALUES (:report_id, :weight, :length, :width, :height)");
 
       $stmt->execute([
@@ -232,8 +240,8 @@ class Report
     }
 
     // Axillary Procedure
-    if (!empty($data['axillary_procedure'])) {
-      $ap = $data['axillary_procedure'];
+    if (!empty($macroscopy['axillary_procedure'])) {
+      $ap = $macroscopy['axillary_procedure'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_axillary_procedure (report_id, no_lymph_node_procedure, axillary_node_sample, sentinel_node_biopsy, axillary_node_clearance, intrammary_node) VALUES (:report_id, :no_lymph_node_procedure, :axillary_node_sample, :sentinel_node_biopsy, :axillary_node_clearance, :intrammary_node)");
 
       $stmt->execute([
@@ -249,11 +257,13 @@ class Report
 
   private function insertMicroscopy($reportId, $data)
   {
-    if (empty($data)) return;
+    if (empty($data) || empty($data["microscopy"])) return;
+
+    $microscopy = $data["microscopy"];
 
     // In Situ Carcinoma
-    if (!empty($data['in_situ_carcinoma'])) {
-      $isc = $data['in_situ_carcinoma'];
+    if (!empty($microscopy['in_situ_carcinoma'])) {
+      $isc = $microscopy['in_situ_carcinoma'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_in_situ_carcinoma (report_id, ductal_carcinoma_in_situ, lobular_carcinoma_in_situ, paget_disease, microinvasion) VALUES (:report_id, :ductal_carcinoma_in_situ, :lobular_carcinoma_in_situ, :paget_disease, :microinvasion)");
 
       $stmt->execute([
@@ -266,8 +276,8 @@ class Report
     }
 
     // Invasive Carcinoma
-    if (!empty($data['invasive_carcinoma'])) {
-      $ic = $data['invasive_carcinoma'];
+    if (!empty($microscopy['invasive_carcinoma'])) {
+      $ic = $microscopy['invasive_carcinoma'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_invasive_carcinoma (report_id, ic_present, invasive_tumor_size, whole_tumor_size, ic_type, invasive_grade, sbr_score, tumour_extent, lympho_vascular_invasion, site_of_other_nodes)  VALUES (:report_id, :ic_present, :invasive_tumor_size, :whole_tumor_size, :ic_type,  :invasive_grade, :sbr_score, :tumour_extent, :lympho_vascular_invasion, :site_of_other_nodes)");
 
       $stmt->execute([
@@ -285,8 +295,8 @@ class Report
     }
 
     // Axillary Node
-    if (!empty($data['axillary_node'])) {
-      $an = $data['axillary_node'];
+    if (!empty($microscopy['axillary_node'])) {
+      $an = $microscopy['axillary_node'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_axillary_node (report_id, an_present, total_number, number_positive) VALUES (:report_id, :an_present, :total_number, :number_positive)");
 
       $stmt->execute([
@@ -298,8 +308,8 @@ class Report
     }
 
     // Margin
-    if (!empty($data['margin'])) {
-      $m = $data['margin'];
+    if (!empty($microscopy['margin'])) {
+      $m = $microscopy['margin'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_margin (report_id, excision_margins, skin_involvement, nipple_involvement,  skeletal_muscle_involvement, surgical_margins) VALUES (:report_id, :excision_margins, :skin_involvement, :nipple_involvement,  :skeletal_muscle_involvement, :surgical_margins)");
 
       $stmt->execute([
@@ -313,8 +323,8 @@ class Report
     }
 
     // Other Margins
-    if (!empty($data['surgical_margins_actual'])) {
-      $om = $data['surgical_margins_actual'];
+    if (!empty($microscopy['surgical_margins_actual'])) {
+      $om = $microscopy['surgical_margins_actual'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_surgical_margins_actual (report_id, superior, inferior, anterior, posterior, lateral, medial)VALUES (:report_id, :superior, :inferior, :anterior, :posterior, :lateral, :medial)");
 
       $stmt->execute([
@@ -329,8 +339,8 @@ class Report
     }
 
     // Pathological Staging
-    if (!empty($data['pathological_staging'])) {
-      $ps = $data['pathological_staging'];
+    if (!empty($microscopy['pathological_staging'])) {
+      $ps = $microscopy['pathological_staging'];
       $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathological_staging (report_id, not_applicable, pt, n, m)VALUES (:report_id, :not_applicable, :pt, :n, :m)");
       $stmt->execute([
         ':report_id' => $reportId,
@@ -355,11 +365,19 @@ class Report
       $stmt->execute([
         ':id' => $reportId,
         ':rev' => $reportData['rev'] ?? null,
-        ':patient_id' => $reportData['patient_id']
+        ':patient_id' => $reportData['patient_id'] ??  $reportData["initial_details"]['patient_id']
       ]);
 
 
+
       $this->pdo->commit();
+
+      $this->insertInitialDetails($reportId, $reportData);
+      $this->insertPathologistReport($reportId, $reportData);
+      $this->insertMacroscopy($reportId, $reportData);
+      $this->insertMicroscopy($reportId, $reportData);
+      $this->insertIHC($reportId, $reportData);
+
 
       $result = array(
         'message' => 'Report created successfully',
@@ -451,7 +469,7 @@ class Report
     $patientId = $_GET['patient_id'] ?? null;
 
     // Calculate current page
-    $currentPage = ($offset / $limit) + 1;
+    $currentPage = floor(($offset / $limit) + 1);
 
     try {
       // First, get the total count
@@ -501,8 +519,8 @@ class Report
 
       // Calculate pagination info
       $totalPages = ceil($total / $limit);
-      $nextPage = ($currentPage < $totalPages) ? $currentPage + 1 : null;
-      $prevPage = ($currentPage > 1) ? $currentPage - 1 : null;
+      $nextPage = ($currentPage) < $totalPages ? ($currentPage + 1) : null;
+      $prevPage = ($currentPage) > 1 ? floor($currentPage - 1) : null;
 
       // Prepare response data
       $responseData = [
