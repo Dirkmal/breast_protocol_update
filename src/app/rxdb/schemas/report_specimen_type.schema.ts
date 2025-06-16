@@ -13,6 +13,8 @@ export const reportSpecimenTypeSchema = {
     open_biopsy: { type: 'boolean', default: false },
     segmental_excision: { type: 'boolean', default: false },
     wide_bore_needle_biopsy: { type: 'boolean', default: false },
+    updated_at: { type: 'number' },
+    created_at: { type: 'number' },
   },
   required: [
     'id',

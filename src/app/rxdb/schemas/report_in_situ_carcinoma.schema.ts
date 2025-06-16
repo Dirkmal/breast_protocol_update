@@ -11,6 +11,8 @@ export const reportInSituCarcinomaSchema = {
     lobular_carcinoma_in_situ: { type: 'boolean', default: false },
     paget_disease: { type: 'boolean', default: false },
     microinvasion: { type: 'boolean', default: false },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id', 'ductal_carcinoma_in_situ'],
 };

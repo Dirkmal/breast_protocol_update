@@ -13,6 +13,8 @@ export const reportOtherMarginsSchema = {
     posterior: { type: 'boolean', default: false },
     lateral: { type: 'boolean', default: false },
     medial: { type: 'boolean', default: false },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: ['id', 'report_id'],
 };

@@ -11,6 +11,8 @@ export const reportIhcSchema = {
     pr: { type: 'string' },
     her2: { type: 'string' },
     quick_allred_score: { type: 'integer' },
+    updated_at: { type: 'string' },
+    created_at: { type: 'string' },
   },
   required: [
     'id',

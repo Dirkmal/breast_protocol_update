@@ -12,6 +12,8 @@ export const reportMarginSchema = {
     nipple_involvement: { type: 'boolean' },
     skeletal_muscle_involvement: { type: 'string' },
     surgical_margins: { type: 'string' },
+    updated_at: { type: 'number' },
+    created_at: { type: 'number' },
   },
   required: ['id', 'report_id', 'excision_margins'],
 };

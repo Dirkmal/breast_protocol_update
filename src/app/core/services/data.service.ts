@@ -248,73 +248,89 @@ export class ReportsService {
       sync_status: synced ? 'synced' : ('pending' as const),
     };
 
+    const dates = {
+      created_at: report.created_at,
+      updated_at: report.updated_at,
+    };
+
     await Promise.all([
       await db['reports'].insert({
         id: report.id,
         rev: report._rev,
         patient_id: report.initial_details.patient_id,
-        created_at: report.created_at,
-        updated_at: report.updated_at,
+        ...dates,
       }),
       await db['report_axillary_node'].insert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.axillary_node,
+        ...dates,
       }),
       await db['report_axillary_procedure'].insert({
         id: '1',
         report_id: report.id,
         ...report.macroscopy.axillary_procedure,
+        ...dates,
       }),
       await db['report_ihc'].insert({
         id: '1',
         report_id: report.id,
         ...report.ihc,
+        ...dates,
       }),
       await db['report_in_situ_carcinoma'].insert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.in_situ_carcinoma,
+        ...dates,
       }),
       await db['report_initial_details'].insert({
         id: '1',
         report_id: report.id,
         ...report.initial_details,
+        ...dates,
       }),
       await db['report_invasive_carcinoma'].insert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.invasive_carcinoma,
+        ...dates,
       }),
       await db['report_margins'].insert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.margin,
+        ...dates,
       }),
       await db['report_other_margins'].insert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.surgical_margins_actual,
+        ...dates,
       }),
       await db['report_pathological_staging'].insert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.pathological_staging,
+        ...dates,
       }),
       await db['report_pathologist_report'].insert({
         id: '1',
         report_id: report.id,
         ...report.pathologist_report,
+        ...dates,
       }),
       await db['report_specimen_dimensions'].insert({
         id: '1',
         report_id: report.id,
         ...report.macroscopy.specimen_dimensions,
+        ...dates,
       }),
       await db['report_specimen_type'].insert({
         id: '1',
         report_id: report.id,
         ...report.macroscopy.specimen_type,
+        ...dates,
       }),
     ]);
   }
@@ -336,6 +352,7 @@ export class ReportsService {
   ): Promise<void> {
     const db = await this.databaseService.db;
     const doc = await db['reports'].findOne(id).exec();
+    const timestamp = new Date().toISOString();
 
     if (!doc) {
       throw new Error('Report not found locally');
@@ -346,6 +363,7 @@ export class ReportsService {
       synced: false,
       sync_status: 'pending',
       last_sync_attempt: new Date().toISOString(),
+      updated_at: timestamp,
     });
   }
 
