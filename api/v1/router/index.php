@@ -1,4 +1,12 @@
 <?php
+// Allow all origins (change "*" to a specific domain if needed)
+header("Access-Control-Allow-Origin: *");
+
+// Allow common HTTP methods
+header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
+
+// Allow common headers
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 require_once __DIR__ . "/../config.php";
 

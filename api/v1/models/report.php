@@ -17,7 +17,7 @@ class Report
   private string $report_invasive_carcinoma = "report_invasive_carcinoma";
   private string $report_axillary_node = "report_axillary_node";
   private string $report_margin = "report_margin";
-  private string $report_surgical_margins_actual = "report_other_margins";
+  private string $report_surgical_margins_actual = "report_surgical_margins_actual";
   private string $report_pathological_staging = "report_pathological_staging";
   private string $report_ihc = "report_ihc";
   private string $report_pathologist_report = "report_pathologist_report";
@@ -60,7 +60,7 @@ class Report
   {
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_initial_details WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    return $stmt->fetch();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
   private function getMacroscopy($reportId)
@@ -70,17 +70,17 @@ class Report
     // Get specimen type
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_specimen_type WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $macroscopy['specimen_type'] = $stmt->fetch();
+    $macroscopy['specimen_type'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get specimen dimensions
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_specimen_dimensions WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $macroscopy['specimen_dimensions'] = $stmt->fetch();
+    $macroscopy['specimen_dimensions'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get axillary procedure
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_axillary_procedure WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $macroscopy['axillary_procedure'] = $stmt->fetch();
+    $macroscopy['axillary_procedure'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $macroscopy;
   }
@@ -89,14 +89,14 @@ class Report
   {
     $stmt = $this->pdo->prepare("SELECT * FROM report_ihc WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    return $stmt->fetch();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
   private function getPathologistReport($reportId)
   {
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_pathologist_report WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    return $stmt->fetch();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
   private function getMicroscopy($reportId)
@@ -106,32 +106,32 @@ class Report
     // Get in situ carcinoma
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_in_situ_carcinoma WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $microscopy['in_situ_carcinoma'] = $stmt->fetch();
+    $microscopy['in_situ_carcinoma'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get invasive carcinoma
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_invasive_carcinoma WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $microscopy['invasive_carcinoma'] = $stmt->fetch();
+    $microscopy['invasive_carcinoma'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get axillary node
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_axillary_node WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $microscopy['axillary_node'] = $stmt->fetch();
+    $microscopy['axillary_node'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get margin
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_margin WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $microscopy['margin'] = $stmt->fetch();
+    $microscopy['margin'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get other margins
-    // $stmt = $this->pdo->prepare("SELECT * FROM $this->report_surgical_margins_actual WHERE report_id = :report_id");
-    // $stmt->execute([':report_id' => $reportId]);
-    // $microscopy['surgical_margins_actual'] = $stmt->fetch();
+    $stmt = $this->pdo->prepare("SELECT * FROM $this->report_surgical_margins_actual WHERE report_id = :report_id");
+    $stmt->execute([':report_id' => $reportId]);
+    $microscopy['surgical_margins_actual'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Get pathological staging
     $stmt = $this->pdo->prepare("SELECT * FROM $this->report_pathological_staging WHERE report_id = :report_id");
     $stmt->execute([':report_id' => $reportId]);
-    $microscopy['pathological_staging'] = $stmt->fetch();
+    $microscopy['pathological_staging'] = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $microscopy;
   }
@@ -400,7 +400,7 @@ class Report
       // Get main report
       $stmt = $this->pdo->prepare("SELECT * FROM $this->table WHERE id = :id");
       $stmt->execute([':id' => $reportId]);
-      $report = $stmt->fetch();
+      $report = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if (!$report) {
         return error_handler("Report not found", 404);
@@ -413,7 +413,7 @@ class Report
       $report['ihc'] = $this->getIHC($reportId);
       $report['pathologist_report'] = $this->getPathologistReport($reportId);
 
-      return success_handler($report, 200);
+      return success_handler(['data' => $report], 200);
     } catch (Exception $e) {
       return error_handler("Failed to get report: " . $e->getMessage(), 400);
     }
@@ -491,7 +491,7 @@ class Report
       $total = (int)$countStmt->fetchColumn();
 
       // Build main query for fetching reports
-      $sql = "SELECT r.*, rid.histology_number, rid.reporting_date, rpr.consultant_pathologist FROM reports r LEFT JOIN report_initial_details rid ON r.id = rid.report_id LEFT JOIN $this->report_pathologist_report rpr ON r.id = rpr.report_id";
+      $sql = "SELECT r.*, rid.hospital_number, rid.histology_number, rid.reporting_date, rpr.consultant_pathologist, rpr.final_diagnosis, rpr.comment FROM reports r LEFT JOIN report_initial_details rid ON r.id = rid.report_id LEFT JOIN $this->report_pathologist_report rpr ON r.id = rpr.report_id";
 
       $params = [];
 

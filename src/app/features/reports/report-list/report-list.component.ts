@@ -18,10 +18,13 @@ import { MaterialModule } from '../../../shared/material.module';
 })
 export class ReportListComponent {
   displayedColumns: string[] = [
-    'Report ID',
+    'Histology Number',
     'Patient Name',
     'Hospital Number',
-    'Gender',
+    'Final Diagnosis',
+    'Comment',
+    'Consultant Pathologist',
+    'Date of Report',
     'Actions',
   ];
   dataSource = new MatTableDataSource<Report>([]);
@@ -64,6 +67,7 @@ export class ReportListComponent {
       next: (reports) => {
         this.dataSource.data = reports;
         this.loading = false;
+        console.log('Reports loaded:', reports);
       },
       error: (error) => {
         this.snackBar.open('Failed to load reports', 'Close', {

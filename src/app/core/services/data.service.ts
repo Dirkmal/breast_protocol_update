@@ -15,6 +15,7 @@ import {
   Report,
   SurgicalMargins,
 } from '../models/report.model';
+import { environment } from '../../../environments/environment';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -28,7 +29,7 @@ interface ApiResponse<T> {
   providedIn: 'root',
 })
 export class ReportsService {
-  private readonly apiUrl = '/api/v1/reports';
+  private readonly apiUrl = `${environment.apiUrl}/reports`;
   private readonly httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -94,6 +95,19 @@ export class ReportsService {
             this.saveReportLocally(backendReport, true);
           })
         );
+        // return this.getReportFromBackend(id).pipe(
+        //   switchMap((backendReport) => {
+        //     if (!backendReport) {
+        //       // You may want to handle this more gracefully
+        //       throw new Error("Backend report not found");
+        //     }
+  
+        //     // Save report locally and return the backendReport
+        //     return from(this.saveReportLocally(backendReport, true)).pipe(
+        //       map(() => backendReport)
+        //     );
+        //   })
+        // );
       })
     );
   }
@@ -288,6 +302,7 @@ export class ReportsService {
     report: Report,
     synced: boolean = false
   ): Promise<void> {
+    console.log('Report received: ', report)
     const db = await this.databaseService.db;
     const reportWithSync = {
       ...report,
@@ -478,12 +493,14 @@ export class ReportsService {
       );
   }
 
-  private getReportFromBackend(id: string): Observable<Report> {
+  getReportFromBackend(id: string): Observable<Report> {
     return this.http.get<ApiResponse<Report>>(`${this.apiUrl}/${id}`).pipe(
       retry(1),
-      map((response) => {
+      map((response) => {        
         if (response.success && response.data) {
-          return this.transformDatesFromApi(response.data.data);
+          // return this.transformDatesFromApi(response.data.data);
+          console.log('Report from backend:', response.data);
+          return response.data.data;
         }
         throw new Error(response?.error || 'Report not found');
       }),

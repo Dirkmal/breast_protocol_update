@@ -1,0 +1,360 @@
+<div class="update-report-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        {{ isEditMode ? 'Update Report' : 'Create New Report' }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Initial Details Section -->
+        <mat-accordion>
+          <mat-expansion-panel expanded="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>Initial Details</mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div formGroupName="initial_details" class="form-section">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Patient ID</mat-label>
+                  <input matInput formControlName="patient_id">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Hospital Number</mat-label>
+                  <input matInput formControlName="hospital_number">
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Histology Number *</mat-label>
+                  <input matInput formControlName="histology_number" required>
+                  <mat-error *ngIf="isFieldInvalid('initial_details.histology_number')">
+                    {{ getFieldError('initial_details.histology_number') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Side</mat-label>
+                  <mat-select formControlName="side">
+                    <mat-option *ngFor="let key of lateralityKeys" [value]="key">
+                      {{ getEnumDisplayValue(laterality, key) }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Referring Hospital</mat-label>
+                  <input matInput formControlName="referring_hospital">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Referring Clinician</mat-label>
+                  <input matInput formControlName="referring_clinician">
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Reporting Date</mat-label>
+                  <input matInput [matDatepicker]="reportingPicker" formControlName="reporting_date">
+                  <mat-datepicker-toggle matSuffix [for]="reportingPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #reportingPicker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Date Typed</mat-label>
+                  <input matInput [matDatepicker]="typedPicker" formControlName="date_typed">
+                  <mat-datepicker-toggle matSuffix [for]="typedPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #typedPicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Typed By</mat-label>
+                <input matInput formControlName="typed_by">
+              </mat-form-field>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Macroscopy Section -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Macroscopy</mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div formGroupName="macroscopy" class="form-section">
+              <!-- Specimen Type -->
+              <div formGroupName="specimen_type">
+                <h4>Specimen Type</h4>
+                <div class="checkbox-group">
+                  <mat-checkbox formControlName="core_needle_biopsy">Core Needle Biopsy</mat-checkbox>
+                  <mat-checkbox formControlName="wide_local_excision">Wide Local Excision</mat-checkbox>
+                  <mat-checkbox formControlName="mastectomy">Mastectomy</mat-checkbox>
+                  <mat-checkbox formControlName="open_biopsy">Open Biopsy</mat-checkbox>
+                  <mat-checkbox formControlName="segmental_excision">Segmental Excision</mat-checkbox>
+                  <mat-checkbox formControlName="wide_bore_needle_biopsy">Wide Bore Needle Biopsy</mat-checkbox>
+                </div>
+              </div>
+
+              <!-- Specimen Dimensions -->
+              <div formGroupName="specimen_dimensions">
+                <h4>Specimen Dimensions</h4>
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Weight (g) *</mat-label>
+                    <input matInput type="number" formControlName="weight" required>
+                    <mat-error *ngIf="isFieldInvalid('macroscopy.specimen_dimensions.weight')">
+                      {{ getFieldError('macroscopy.specimen_dimensions.weight') }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Length (mm) *</mat-label>
+                    <input matInput type="number" formControlName="length" required>
+                    <mat-error *ngIf="isFieldInvalid('macroscopy.specimen_dimensions.length')">
+                      {{ getFieldError('macroscopy.specimen_dimensions.length') }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Width (mm) *</mat-label>
+                    <input matInput type="number" formControlName="width" required>
+                    <mat-error *ngIf="isFieldInvalid('macroscopy.specimen_dimensions.width')">
+                      {{ getFieldError('macroscopy.specimen_dimensions.width') }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Height (mm) *</mat-label>
+                    <input matInput type="number" formControlName="height" required>
+                    <mat-error *ngIf="isFieldInvalid('macroscopy.specimen_dimensions.height')">
+                      {{ getFieldError('macroscopy.specimen_dimensions.height') }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Axillary Procedure -->
+              <div formGroupName="axillary_procedure">
+                <h4>Axillary Procedure</h4>
+                <div class="checkbox-group">
+                  <mat-checkbox formControlName="no_lymph_node_procedure">No Lymph Node Procedure</mat-checkbox>
+                  <mat-checkbox formControlName="axillary_node_sample">Axillary Node Sample</mat-checkbox>
+                  <mat-checkbox formControlName="sentinel_node_biopsy">Sentinel Node Biopsy</mat-checkbox>
+                  <mat-checkbox formControlName="axillary_node_clearance">Axillary Node Clearance</mat-checkbox>
+                  <mat-checkbox formControlName="intrammary_node">Intrammary Node</mat-checkbox>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Microscopy Section -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Microscopy</mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div formGroupName="microscopy" class="form-section">
+              <!-- In Situ Carcinoma -->
+              <div formGroupName="in_situ_carcinoma">
+                <h4>In Situ Carcinoma</h4>
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Ductal Carcinoma In Situ *</mat-label>
+                    <input matInput type="number" formControlName="ductal_carcinoma_in_situ" required>
+                    <mat-error *ngIf="isFieldInvalid('microscopy.in_situ_carcinoma.ductal_carcinoma_in_situ')">
+                      {{ getFieldError('microscopy.in_situ_carcinoma.ductal_carcinoma_in_situ') }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="checkbox-group">
+                  <mat-checkbox formControlName="lobular_carcinoma_in_situ">Lobular Carcinoma In Situ</mat-checkbox>
+                  <mat-checkbox formControlName="paget_disease">Paget Disease</mat-checkbox>
+                  <mat-checkbox formControlName="microinvasion">Microinvasion</mat-checkbox>
+                </div>
+              </div>
+
+              <!-- Invasive Carcinoma -->
+              <div formGroupName="invasive_carcinoma">
+                <h4>Invasive Carcinoma</h4>
+                <mat-checkbox formControlName="ic_present">IC Present</mat-checkbox>
+                
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Invasive Tumor Size (mm)</mat-label>
+                    <input matInput type="number" formControlName="invasive_tumor_size">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Whole Tumor Size (mm)</mat-label>
+                    <input matInput type="number" formControlName="whole_tumor_size">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>IC Type</mat-label>
+                    <mat-select formControlName="ic_type">
+                      <mat-option *ngFor="let key of invasiveCarcinomaTypeKeys" [value]="key">
+                        {{ getEnumDisplayValue(invasiveCarcinomaTypes, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Invasive Grade</mat-label>
+                    <mat-select formControlName="invasive_grade">
+                      <mat-option *ngFor="let key of invasiveGradeKeys" [value]="key">
+                        {{ getEnumDisplayValue(invasiveGrades, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>SBR Score</mat-label>
+                    <input matInput type="number" formControlName="sbr_score">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Tumour Extent</mat-label>
+                    <mat-select formControlName="tumour_extent">
+                      <mat-option *ngFor="let key of tumourExtentKeys" [value]="key">
+                        {{ getEnumDisplayValue(tumourExtent, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Lymphovascular Invasion</mat-label>
+                    <mat-select formControlName="lympho_vascular_invasion">
+                      <mat-option *ngFor="let key of lymphoKeys" [value]="key">
+                        {{ getEnumDisplayValue(lympho, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Site of Other Nodes</mat-label>
+                    <input matInput formControlName="site_of_other_nodes">
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Axillary Node -->
+              <div formGroupName="axillary_node">
+                <h4>Axillary Node</h4>
+                <mat-checkbox formControlName="an_present">AN Present</mat-checkbox>
+                
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Total Number</mat-label>
+                    <input matInput type="number" formControlName="total_number">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Number Positive</mat-label>
+                    <input matInput type="number" formControlName="number_positive">
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Margin -->
+              <div formGroupName="margin">
+                <h4>Margin</h4>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Excision Margins *</mat-label>
+                  <textarea matInput formControlName="excision_margins" rows="3" required></textarea>
+                  <mat-error *ngIf="isFieldInvalid('microscopy.margin.excision_margins')">
+                    {{ getFieldError('microscopy.margin.excision_margins') }}
+                  </mat-error>
+                </mat-form-field>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Skin Involvement</mat-label>
+                    <mat-select formControlName="skin_involvement">
+                      <mat-option *ngFor="let key of skinInvolvementKeys" [value]="key">
+                        {{ getEnumDisplayValue(skinInvolvement, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Skeletal Muscle Involvement</mat-label>
+                    <mat-select formControlName="skeletal_muscle_involvement">
+                      <mat-option *ngFor="let key of skeletalMuscleKeys" [value]="key">
+                        {{ getEnumDisplayValue(skeletalMuscle, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-checkbox formControlName="nipple_involvement">Nipple Involvement</mat-checkbox>
+                  
+                  <mat-form-field appearance="outline">
+                    <mat-label>Surgical Margins</mat-label>
+                    <mat-select formControlName="surgical_margins">
+                      <mat-option *ngFor="let key of surgicalMarginKeys" [value]="key">
+                        {{ getEnumDisplayValue(surgicalMargins, key) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- Surgical Margins Actual -->
+              <div formGroupName="surgical_margins_actual">
+                <h4>Surgical Margins Actual</h4>
+                <div class="checkbox-group">
+                  <mat-checkbox formControlName="superior">Superior</mat-checkbox>
+                  <mat-checkbox formControlName="inferior">Inferior</mat-checkbox>
+                  <mat-checkbox formControlName="anterior">Anterior</mat-checkbox>
+                  <mat-checkbox formControlName="posterior">Posterior</mat-checkbox>
+                  <mat-checkbox formControlName="lateral">Lateral</mat-checkbox>
+                  <mat-checkbox formControlName="medial">Medial</mat-checkbox>
+                </div>
+              </div>
+
+              <!-- Pathological Staging -->
+              <div formGroupName="pathological_staging">
+                <h4>Pathological Staging</h4>
+                <mat-checkbox formControlName="not_applicable">Not Applicable</mat-checkbox>
+                
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>pT *</mat-label>
+                    <input matInput type="number" formControlName="pt" required>
+                    <mat-error *ngIf="isFieldInvalid('microscopy.pathological_staging.pt')">
+                      {{ getFieldError('microscopy.pathological_staging.pt') }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>N *</mat-label>
+                    <input matInput type="number" formControlName="n" required>
+                    <mat-error *ngIf="isFieldInvalid('microscopy.pathological_staging.n')">
+                      {{ getFieldError('microscopy.pathological_staging.n') }}
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>M *</mat-label>
+                    <input matInput type="number" formControlName="m" required>
+                    <mat-error *ngIf="isFieldInvalid('microscopy.pathological_staging.m')">
+                      {{ getFieldError('microscopy.pathological_staging.m') }}
+                    </mat-error>
+                  </mat-form-field>
