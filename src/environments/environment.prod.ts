@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/api/v1/reports',
+  apiUrl: 'https://api.breast-cancer-registry.ng/api/v1',
 };

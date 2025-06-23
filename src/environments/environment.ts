@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api/v1',
-  apiPort: 3000
+  apiUrl: 'https://api.breast-cancer-registry.ng/api/v1',
+  // apiPort: 3000,
 };
 
 /*
