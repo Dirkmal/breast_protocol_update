@@ -4,4 +4,3 @@ deployment:
     - export DEPLOYPATH=/home2/breastca/public_html/
     - /bin/cp -a dist/breast_protocol_app/browser/. $DEPLOYPATH
     - /bin/cp -a api/. $DEPLOYPATH/api
-    - /bin/cp -a api/v1/.htaccess $DEPLOYPATH
