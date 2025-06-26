@@ -82,22 +82,30 @@ export class ReportFormComponent implements OnInit {
   margins: string[] = Object.values(SurgicalMargins);
   ihc_options: string[] = Object.values(IHCStatus);
 
-  patients: Option[] = [{ value: '1', viewValue: 'Kamaldeen Samaila' }];
-  hospitals: Option[] = [{ value: '1', viewValue: 'Kamal Hospital' }];
+  // patients: Option[] = [{ value: '1', viewValue: 'Kamaldeen Samaila' }];
+  // hospitals: Option[] = [{ value: '1', viewValue: 'Kamal Hospital' }];
+  histologic_types: Option[] = [
+    { value: 'Invasive Ductal Carcinoma', viewValue: 'Invasive Ductal Carcinoma' },
+    { value: 'Invasive Lobular Carcinoma', viewValue: 'Invasive Lobular Carcinoma' },
+    { value: 'Tubular Carcinoma', viewValue: 'Tubular Carcinoma' },
+    { value: 'Mucinous Carcinoma', viewValue: 'Mucinous Carcinoma' },
+    { value: 'Papillary Carcinoma', viewValue: 'Papillary Carcinoma' },
+    { value: 'Cribriform Carcinoma', viewValue: 'Cribriform Carcinoma' },
+    { value: 'Metaplastic Carcinoma', viewValue: 'Metaplastic Carcinoma' },
+    { value: 'Apocrine Carcinoma', viewValue: 'Apocrine Carcinoma' },
+  ];
 
   detail_controls = [
     new DynamicControl({
-      label: 'patient',
+      label: 'Patient Name',
       name: 'patient_id',
-      required: true,
-      controlType: ControlTypes.SELECT,
-      options: this.patients,
+      required: true
     }),
     new DynamicControl({
       name: 'hospital_number',
       required: true,
-      controlType: ControlTypes.SELECT,
-      options: this.hospitals,
+      // controlType: ControlTypes.SELECT,
+      // options: this.hospitals,
     }),
     new DynamicControl({ name: 'histology_number', required: true }),
     new DynamicControl({ name: 'referring_hospital', required: true }),
@@ -372,11 +380,7 @@ export class ReportFormComponent implements OnInit {
     }),
     new DynamicControl({
       name: 'pr',
-      controlType: ControlTypes.SELECT,
-      options: this.ihc_options,
-    }),
-    new DynamicControl({
-      name: 'her2',
+      label: 'Progesterone Receptor',
       controlType: ControlTypes.SELECT,
       options: this.ihc_options,
     }),
@@ -384,6 +388,13 @@ export class ReportFormComponent implements OnInit {
       name: 'quick_allred_score',
       controlType: ControlTypes.NUMBER,
     }),
+    new DynamicControl({
+      name: 'her2',
+      label: 'HER2 NEU',
+      controlType: ControlTypes.SELECT,
+      options: this.ihc_options,
+    }),
+    
   ];
 
   /** Pathologist report **/
@@ -391,7 +402,8 @@ export class ReportFormComponent implements OnInit {
     new DynamicControl({
       name: 'final_diagnosis',
       required: true,
-      controlType: ControlTypes.TEXTAREA,
+      controlType: ControlTypes.SELECT,
+      options: this.histologic_types,
     }),
     new DynamicControl({
       name: 'comment',
