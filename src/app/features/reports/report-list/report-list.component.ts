@@ -67,7 +67,6 @@ export class ReportListComponent {
       next: (reports) => {
         this.dataSource.data = reports;
         this.loading = false;
-        console.log('Reports loaded:', reports);
       },
       error: (error) => {
         this.snackBar.open('Failed to load reports', 'Close', {

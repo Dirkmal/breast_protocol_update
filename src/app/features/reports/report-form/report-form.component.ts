@@ -531,10 +531,19 @@ export class ReportFormComponent implements OnInit {
 
     this.ds.createReport(data).subscribe({
       next: (savedReport) => {
-        console.log('Report saved successfully', savedReport);
+        // console.log('Report saved successfully', savedReport);
+        this.snackBar.open('Report saved successfully', 'Close', {
+          duration: 5000,
+        });
+        this.report = new Report(); // Reset the report after saving
+        this.initForms(); // Reinitialize forms to clear input fields
+        this.currentStep = 0; // Reset to the first step
       },
       error: (err) => {
         console.error('Error saving report', err);
+        this.snackBar.open('Error saving report', 'Close', {
+          duration: 5000,
+        });
       },
     });
   }

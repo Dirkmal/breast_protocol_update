@@ -302,7 +302,6 @@ export class ReportsService {
     report: Report,
     synced: boolean = false
   ): Promise<void> {
-    console.log('Report received: ', report)
     const db = await this.databaseService.db;
     const reportWithSync = {
       ...report,
