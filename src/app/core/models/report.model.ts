@@ -97,7 +97,8 @@ export interface IHC {
   oestrogen_receptor_status: IHCStatus;
   pr: IHCStatus;
   her2: IHCStatus;
-  quick_allred_score: number;
+  or_quick_allred_score: number;
+  pr_quick_allred_score: number;
 }
 
 export interface PathologistReport {

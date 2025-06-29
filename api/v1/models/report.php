@@ -152,19 +152,23 @@ class Report
 
     $initial_details = $data["initial_details"];
 
-    $stmt = $this->pdo->prepare("INSERT INTO $this->report_initial_details (report_id, hospital_number, histology_number, referring_hospital,  referring_clinician, reporting_date, side, date_typed, typed_by) VALUES (:report_id, :hospital_number, :histology_number, :referring_hospital, :referring_clinician, :reporting_date, :side, :date_typed, :typed_by)");
+    try {
+      $stmt = $this->pdo->prepare("INSERT INTO $this->report_initial_details (report_id, hospital_number, histology_number, referring_hospital,  referring_clinician, reporting_date, side, typed_by) VALUES (:report_id, :hospital_number, :histology_number, :referring_hospital, :referring_clinician, :reporting_date, :side, :typed_by)");
 
-    $stmt->execute([
-      ':report_id' => $reportId,
-      ':hospital_number' => $initial_details['hospital_number'] ?? null,
-      ':histology_number' => $initial_details['histology_number'] ?? '',
-      ':referring_hospital' => $initial_details['referring_hospital'] ?? null,
-      ':referring_clinician' => $initial_details['referring_clinician'] ?? null,
-      ':reporting_date' => $initial_details['reporting_date'] ?? null,
-      ':side' => $initial_details['side'] ?? null,
-      ':date_typed' => $initial_details['date_typed'] ?? null,
-      ':typed_by' => $initial_details['typed_by'] ?? null
-    ]);
+      $stmt->execute([
+        ':report_id' => $reportId,
+        ':hospital_number' => $initial_details['hospital_number'] ?? '',
+        ':histology_number' => $initial_details['histology_number'] ?? '',
+        ':referring_hospital' => $initial_details['referring_hospital'] ?? "",
+        ':referring_clinician' => $initial_details['referring_clinician'] ?? "",
+        ':reporting_date' => $initial_details['reporting_date'] ?? "",
+        ':side' => $initial_details['side'] ?? "",
+        // ':date_typed' => $initial_details['date_typed'] ?? "",
+        ':typed_by' => $initial_details['typed_by'] ?? ""
+      ]);
+    }  catch (PDOException $e) {
+      throw new Exception("Failed to insert initial details: " . $e->getMessage());
+    }
   }
 
   private function insertIHC($reportId, $data)
@@ -173,15 +177,20 @@ class Report
 
     $ihc = $data["ihc"];
 
-    $stmt = $this->pdo->prepare("INSERT INTO $this->report_ihc (report_id, oestrogen_receptor_status, pr, her2, quick_allred_score) VALUES (:report_id, :oestrogen_receptor_status, :pr, :her2, :quick_allred_score)");
+    try {
+      $stmt = $this->pdo->prepare("INSERT INTO $this->report_ihc (report_id, oestrogen_receptor_status, pr, her2, or_quick_allred_score, pr_quick_allred_score) VALUES (:report_id, :oestrogen_receptor_status, :pr, :her2, :or_quick_allred_score, :pr_quick_allred_score)");
 
-    $stmt->execute([
-      ':report_id' => $reportId,
-      ':oestrogen_receptor_status' => $ihc['oestrogen_receptor_status'],
-      ':pr' => $ihc['pr'],
-      ':her2' => $ihc['her2'],
-      ':quick_allred_score' => $ihc['quick_allred_score']
-    ]);
+      $stmt->execute([
+        ':report_id' => $reportId,
+        ':oestrogen_receptor_status' => $ihc['oestrogen_receptor_status'] ?? "",
+        ':pr' => $ihc['pr'] ?? "",
+        ':her2' => $ihc['her2'] ?? "",
+        ':or_quick_allred_score' => $ihc['or_quick_allred_score'] ?? 0,
+        ':pr_quick_allred_score' => $ihc['pr_quick_allred_score'] ?? 0
+      ]);
+    }  catch (PDOException $e) {
+      throw new Exception("Failed to insert IHC: " . $e->getMessage());
+    }
   }
 
   private function insertPathologistReport($reportId, $data)
@@ -190,17 +199,21 @@ class Report
 
     $report = $data["pathologist_report"];
 
-    $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathologist_report (report_id, final_diagnosis, comment, consultant_pathologist, date_of_request, date_received, date_reviewed) VALUES (:report_id, :final_diagnosis, :comment, :consultant_pathologist, :date_of_request, :date_received, :date_reviewed)");
+    try {
+      $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathologist_report (report_id, final_diagnosis, comment, consultant_pathologist, date_of_request, date_received, date_reviewed) VALUES (:report_id, :final_diagnosis, :comment, :consultant_pathologist, :date_of_request, :date_received, :date_reviewed)");
 
-    $stmt->execute([
-      ':report_id' => $reportId,
-      ':final_diagnosis' => $report['final_diagnosis'],
-      ':comment' => $report['comment'],
-      ':consultant_pathologist' => $report['consultant_pathologist'],
-      ':date_of_request' => $report['date_of_request'],
-      ':date_received' => $report['date_received'],
-      ':date_reviewed' => $report['date_reviewed']
-    ]);
+      $stmt->execute([
+        ':report_id' => $reportId,
+        ':final_diagnosis' => $report['final_diagnosis'] ?? "",
+        ':comment' => $report['comment'] ?? "",
+        ':consultant_pathologist' => $report['consultant_pathologist'] ?? "",
+        ':date_of_request' => $report['date_of_request'] ?? "",
+        ':date_received' => $report['date_received'] ?? "",
+        ':date_reviewed' => $report['date_reviewed'] ?? ""
+      ]);
+    }  catch (PDOException $e) {
+      throw new Exception("Failed to insert pathologist report: " . $e->getMessage());
+    }
   }
 
   private function insertMacroscopy($reportId, $data)
@@ -212,46 +225,61 @@ class Report
     // Specimen Type
     if (!empty($macroscopy['specimen_type'])) {
       $st = $macroscopy['specimen_type'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_specimen_type (report_id, core_needle_biopsy, wide_local_excision, mastectomy, open_biopsy, segmental_excision, wide_bore_needle_biopsy) VALUES (:report_id, :core_needle_biopsy, :wide_local_excision, :mastectomy, :open_biopsy, :segmental_excision, :wide_bore_needle_biopsy)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_specimen_type (report_id, core_needle_biopsy, wide_local_excision, mastectomy, open_biopsy, segmental_excision, wide_bore_needle_biopsy) VALUES (:report_id, :core_needle_biopsy, :wide_local_excision, :mastectomy, :open_biopsy, :segmental_excision, :wide_bore_needle_biopsy)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':core_needle_biopsy' => $st['core_needle_biopsy'] ?? 0,
-        ':wide_local_excision' => $st['wide_local_excision'] ?? 0,
-        ':mastectomy' => $st['mastectomy'] ?? 0,
-        ':open_biopsy' => $st['open_biopsy'] ?? 0,
-        ':segmental_excision' => $st['segmental_excision'] ?? 0,
-        ':wide_bore_needle_biopsy' => $st['wide_bore_needle_biopsy'] ?? 0
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':core_needle_biopsy' => $this->normalizeBool($st['core_needle_biopsy'] ?? false),
+          ':wide_local_excision' => $this->normalizeBool($st['wide_local_excision'] ?? false),
+          ':mastectomy' => $this->normalizeBool($st['mastectomy'] ?? false),
+          ':open_biopsy' => $this->normalizeBool($st['open_biopsy'] ?? false),
+          ':segmental_excision' => $this->normalizeBool($st['segmental_excision'] ?? false),
+          ':wide_bore_needle_biopsy' => $this->normalizeBool($st['wide_bore_needle_biopsy'] ?? false)
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert specimen type: " . $e->getMessage());
+      }
     }
 
     // Specimen Dimensions
     if (!empty($macroscopy['specimen_dimensions'])) {
       $sd = $macroscopy['specimen_dimensions'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_specimen_dimensions (report_id, weight, length, width, height) VALUES (:report_id, :weight, :length, :width, :height)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_specimen_dimensions (report_id, weight, length, width, height) VALUES (:report_id, :weight, :length, :width, :height)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':weight' => $sd['weight'],
-        ':length' => $sd['length'],
-        ':width' => $sd['width'],
-        ':height' => $sd['height']
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':weight' => $sd['weight'] ?? 0,
+          ':length' => $sd['length'] ?? 0,
+          ':width' => $sd['width'] ?? 0,
+          ':height' => $sd['height'] ?? 0
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert specimen dimensions: " . $e->getMessage());
+      }
     }
 
     // Axillary Procedure
     if (!empty($macroscopy['axillary_procedure'])) {
       $ap = $macroscopy['axillary_procedure'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_axillary_procedure (report_id, no_lymph_node_procedure, axillary_node_sample, sentinel_node_biopsy, axillary_node_clearance, intrammary_node) VALUES (:report_id, :no_lymph_node_procedure, :axillary_node_sample, :sentinel_node_biopsy, :axillary_node_clearance, :intrammary_node)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_axillary_procedure (report_id, no_lymph_node_procedure, axillary_node_sample, sentinel_node_biopsy, axillary_node_clearance, intrammary_node) VALUES (:report_id, :no_lymph_node_procedure, :axillary_node_sample, :sentinel_node_biopsy, :axillary_node_clearance, :intrammary_node)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':no_lymph_node_procedure' => $ap['no_lymph_node_procedure'] ?? 0,
-        ':axillary_node_sample' => $ap['axillary_node_sample'] ?? 0,
-        ':sentinel_node_biopsy' => $ap['sentinel_node_biopsy'] ?? 0,
-        ':axillary_node_clearance' => $ap['axillary_node_clearance'] ?? 0,
-        ':intrammary_node' => $ap['intrammary_node'] ?? 0
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':no_lymph_node_procedure' => $this->normalizeBool($ap['no_lymph_node_procedure'] ?? false),
+          ':axillary_node_sample' => $this->normalizeBool($ap['axillary_node_sample'] ?? false),
+          ':sentinel_node_biopsy' => $this->normalizeBool($ap['sentinel_node_biopsy'] ?? false),
+          ':axillary_node_clearance' => $this->normalizeBool($ap['axillary_node_clearance'] ?? false),
+          ':intrammary_node' => $this->normalizeBool($ap['intrammary_node'] ?? false)
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert axillary procedure: " . $e->getMessage());
+      }
     }
   }
 
@@ -264,133 +292,157 @@ class Report
     // In Situ Carcinoma
     if (!empty($microscopy['in_situ_carcinoma'])) {
       $isc = $microscopy['in_situ_carcinoma'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_in_situ_carcinoma (report_id, ductal_carcinoma_in_situ, lobular_carcinoma_in_situ, paget_disease, microinvasion) VALUES (:report_id, :ductal_carcinoma_in_situ, :lobular_carcinoma_in_situ, :paget_disease, :microinvasion)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_in_situ_carcinoma (report_id, ductal_carcinoma_in_situ, lobular_carcinoma_in_situ, paget_disease, microinvasion) VALUES (:report_id, :ductal_carcinoma_in_situ, :lobular_carcinoma_in_situ, :paget_disease, :microinvasion)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':ductal_carcinoma_in_situ' => $isc['ductal_carcinoma_in_situ'],
-        ':lobular_carcinoma_in_situ' => $isc['lobular_carcinoma_in_situ'] ?? 0,
-        ':paget_disease' => $isc['paget_disease'] ?? 0,
-        ':microinvasion' => $isc['microinvasion'] ?? 0
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':ductal_carcinoma_in_situ' => $isc['ductal_carcinoma_in_situ'] ?? "",
+          ':lobular_carcinoma_in_situ' => $this->normalizeBool($isc['lobular_carcinoma_in_situ'] ?? false),
+          ':paget_disease' => $this->normalizeBool($isc['paget_disease'] ?? false),
+          ':microinvasion' => $this->normalizeBool($isc['microinvasion'] ?? false)
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert in-situ carcinoma: " . $e->getMessage());
+      }
     }
 
     // Invasive Carcinoma
     if (!empty($microscopy['invasive_carcinoma'])) {
       $ic = $microscopy['invasive_carcinoma'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_invasive_carcinoma (report_id, ic_present, invasive_tumor_size, whole_tumor_size, ic_type, invasive_grade, sbr_score, tumour_extent, lympho_vascular_invasion, site_of_other_nodes)  VALUES (:report_id, :ic_present, :invasive_tumor_size, :whole_tumor_size, :ic_type,  :invasive_grade, :sbr_score, :tumour_extent, :lympho_vascular_invasion, :site_of_other_nodes)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_invasive_carcinoma (report_id, ic_present, invasive_tumor_size, whole_tumor_size, ic_type, invasive_grade, sbr_score, tumour_extent, lympho_vascular_invasion, site_of_other_nodes) VALUES (:report_id, :ic_present, :invasive_tumor_size, :whole_tumor_size, :ic_type,  :invasive_grade, :sbr_score, :tumour_extent, :lympho_vascular_invasion, :site_of_other_nodes)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':ic_present' => $ic['ic_present'] ?? null,
-        ':invasive_tumor_size' => $ic['invasive_tumor_size'] ?? null,
-        ':whole_tumor_size' => $ic['whole_tumor_size'] ?? null,
-        ':ic_type' => $ic['ic_type'] ?? null,
-        ':invasive_grade' => $ic['invasive_grade'] ?? null,
-        ':sbr_score' => $ic['sbr_score'] ?? null,
-        ':tumour_extent' => $ic['tumour_extent'] ?? null,
-        ':lympho_vascular_invasion' => $ic['lympho_vascular_invasion'] ?? null,
-        ':site_of_other_nodes' => $ic['site_of_other_nodes'] ?? null
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':ic_present' => $this->normalizeBool($ic['ic_present'] ?? false),
+          ':invasive_tumor_size' => $ic['invasive_tumor_size'] ?? 0,
+          ':whole_tumor_size' => $ic['whole_tumor_size'] ?? 0,
+          ':ic_type' => $ic['ic_type'] ?? "No Special Type",
+          ':invasive_grade' => $ic['invasive_grade'] ?? "",
+          ':sbr_score' => $ic['sbr_score'] ?? 0,
+          ':tumour_extent' => $ic['tumour_extent'] ?? "",
+          ':lympho_vascular_invasion' => $ic['lympho_vascular_invasion'] ?? "",
+          ':site_of_other_nodes' => $ic['site_of_other_nodes'] ?? ""
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert invasive carcinoma: " . $e->getMessage());
+      }
     }
 
     // Axillary Node
     if (!empty($microscopy['axillary_node'])) {
       $an = $microscopy['axillary_node'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_axillary_node (report_id, an_present, total_number, number_positive) VALUES (:report_id, :an_present, :total_number, :number_positive)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_axillary_node (report_id, an_present, total_number, number_positive) VALUES (:report_id, :an_present, :total_number, :number_positive)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':an_present' => $an['an_present'] ?? null,
-        ':total_number' => $an['total_number'] ?? null,
-        ':number_positive' => $an['number_positive'] ?? null
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':an_present' => $this->normalizeBool($an['an_present'] ?? false),
+          ':total_number' => $an['total_number'] ?? 0,
+          ':number_positive' => $an['number_positive'] ?? 0
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert axillary node: " . $e->getMessage());
+      }
     }
 
     // Margin
     if (!empty($microscopy['margin'])) {
       $m = $microscopy['margin'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_margin (report_id, excision_margins, skin_involvement, nipple_involvement,  skeletal_muscle_involvement, surgical_margins) VALUES (:report_id, :excision_margins, :skin_involvement, :nipple_involvement,  :skeletal_muscle_involvement, :surgical_margins)");
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_margin (report_id, excision_margins, skin_involvement, nipple_involvement,  skeletal_muscle_involvement, surgical_margins) VALUES (:report_id, :excision_margins, :skin_involvement, :nipple_involvement,  :skeletal_muscle_involvement, :surgical_margins)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':excision_margins' => $m['excision_margins'],
-        ':skin_involvement' => $m['skin_involvement'] ?? null,
-        ':nipple_involvement' => $m['nipple_involvement'] ?? null,
-        ':skeletal_muscle_involvement' => $m['skeletal_muscle_involvement'] ?? null,
-        ':surgical_margins' => $m['surgical_margins'] ?? null
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':excision_margins' => $m['excision_margins'] ?? "",
+          ':skin_involvement' => $m['skin_involvement'] ?? "",
+          ':nipple_involvement' => $this->normalizeBool($m['nipple_involvement'] ?? false),
+          ':skeletal_muscle_involvement' => $m['skeletal_muscle_involvement'] ?? "",
+          ':surgical_margins' => $m['surgical_margins'] ?? ""
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert margin: " . $e->getMessage());
+      }
     }
 
     // Other Margins
     if (!empty($microscopy['surgical_margins_actual'])) {
       $om = $microscopy['surgical_margins_actual'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_surgical_margins_actual (report_id, superior, inferior, anterior, posterior, lateral, medial)VALUES (:report_id, :superior, :inferior, :anterior, :posterior, :lateral, :medial)");
+     
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_surgical_margins_actual (report_id, superior, inferior, anterior, posterior, lateral, medial) VALUES (:report_id, :superior, :inferior, :anterior, :posterior, :lateral, :medial)");
 
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':superior' => $om['superior'] ?? 0,
-        ':inferior' => $om['inferior'] ?? 0,
-        ':anterior' => $om['anterior'] ?? 0,
-        ':posterior' => $om['posterior'] ?? 0,
-        ':lateral' => $om['lateral'] ?? 0,
-        ':medial' => $om['medial'] ?? 0
-      ]);
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':superior' => $this->normalizeBool($om['superior'] ?? false),
+          ':inferior' => $this->normalizeBool($om['inferior'] ?? false),
+          ':anterior' => $this->normalizeBool($om['anterior'] ?? false),
+          ':posterior' => $this->normalizeBool($om['posterior'] ?? false),
+          ':lateral' => $this->normalizeBool($om['lateral'] ?? false),
+          ':medial' => $this->normalizeBool($om['medial'] ?? false)
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert surgical margins actual: " . $e->getMessage());
+      }
     }
 
     // Pathological Staging
     if (!empty($microscopy['pathological_staging'])) {
       $ps = $microscopy['pathological_staging'];
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathological_staging (report_id, not_applicable, pt, n, m)VALUES (:report_id, :not_applicable, :pt, :n, :m)");
-      $stmt->execute([
-        ':report_id' => $reportId,
-        ':not_applicable' => $ps['not_applicable'],
-        ':pt' => $ps['pt'],
-        ':n' => $ps['n'],
-        ':m' => $ps['m']
-      ]);
+      
+      try {
+        $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathological_staging (report_id, not_applicable, pt, n, m) VALUES (:report_id, :not_applicable, :pt, :n, :m)");
+        $stmt->execute([
+          ':report_id' => $reportId,
+          ':not_applicable' => $this->normalizeBool($ps['not_applicable'] ?? false),
+          ':pt' => $ps['pt'] ?? 0,
+          ':n' => $ps['n'] ?? 0,
+          ':m' => $ps['m'] ?? 0
+        ]);
+      }  catch (PDOException $e) {
+        throw new Exception("Failed to insert pathological staging: " . $e->getMessage());
+      }
     }
   }
 
 
-  public function createReport($reportData)
-  {
+  public function createReport($reportData) {
     try {
-      $this->pdo->beginTransaction();
-      $reportId = $reportData['id'] ?? generateUUID();
+        $this->pdo->beginTransaction();
+        $reportId = $reportData['id'] ?? generateUUID();
 
-      // Insert main report
-      $stmt = $this->pdo->prepare("INSERT INTO $this->table (id, rev, patient_id) VALUES (:id, :rev, :patient_id) ");
+        // Insert main report
+        $stmt = $this->pdo->prepare("INSERT INTO $this->table (id, rev, patient_id) VALUES (:id, :rev, :patient_id)");
+        $stmt->execute([
+            ':id' => $reportId,
+            ':rev' => $reportData['rev'] ?? null,
+            ':patient_id' => $reportData['patient_id'] ?? $reportData["initial_details"]['patient_id']
+        ]);
 
-      $stmt->execute([
-        ':id' => $reportId,
-        ':rev' => $reportData['rev'] ?? null,
-        ':patient_id' => $reportData['patient_id'] ??  $reportData["initial_details"]['patient_id']
-      ]);
+        // Insert all related data BEFORE committing
+        $this->insertInitialDetails($reportId, $reportData);
+        $this->insertPathologistReport($reportId, $reportData);
+        $this->insertMacroscopy($reportId, $reportData);
+        $this->insertMicroscopy($reportId, $reportData);
+        $this->insertIHC($reportId, $reportData);
 
+        $this->pdo->commit(); // Commit AFTER all insertions
 
+        $result = array(
+            'message' => 'Report created successfully',
+            'status' => 'success',
+            'data' => array('report_id' => $reportId)
+        );
 
-      $this->pdo->commit();
-
-      $this->insertInitialDetails($reportId, $reportData);
-      $this->insertPathologistReport($reportId, $reportData);
-      $this->insertMacroscopy($reportId, $reportData);
-      $this->insertMicroscopy($reportId, $reportData);
-      $this->insertIHC($reportId, $reportData);
-
-
-      $result = array(
-        'message' => 'Report created successfully',
-        'status' => 'success',
-        'data' => array(
-          'report_id' => $reportId
-        )
-      );
-
-      return success_handler($result, 201);
+        return success_handler($result, 201);
     } catch (Exception $e) {
-      $this->pdo->rollBack();
-      return error_handler("Failed to create report " . $e->getMessage(), 400);
+        $this->pdo->rollBack();
+        return error_handler("Failed to create report " . $e->getMessage(), 400);
     }
   }
 
@@ -536,5 +588,20 @@ class Report
     } catch (Exception $e) {
       return error_handler("Failed to get reports: " . $e->getMessage(), 400);
     }
+  }
+
+  private function normalizeBool($value): int {
+    // Handle various falsy representations
+    if ($value === '' || $value === null || $value === false || $value === 0 || $value === '0') {
+        return 0;
+    }
+    
+    // Handle various truthy representations
+    if ($value === true || $value === 1 || $value === '1' || $value === 'true') {
+        return 1;
+    }
+    
+    // Default to false for unexpected values
+    return 0;
   }
 }

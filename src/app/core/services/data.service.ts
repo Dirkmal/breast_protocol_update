@@ -162,20 +162,41 @@ export class ReportsService {
   getAllReports(): Observable<Report[]> {
     return from(this.databaseService.db).pipe(
       switchMap((db) =>
-        from(db['reports'].find().exec()).pipe(
-          map((docs) => docs.map((doc) => doc.toJSON())),
+        // Fetch both reports and initial details from local DB
+        forkJoin({
+          reports: from(db['reports'].find().exec()).pipe(
+            map((docs) => docs.map((doc) => doc.toJSON()))
+          ),
+          initialDetails: from(db['report_initial_details'].find().exec()).pipe(
+            map((docs) => docs.map((doc) => doc.toJSON()))
+          )
+        }).pipe(
+          map(({ reports, initialDetails }) => {
+            // Create a map of initial details by report_id for quick lookup
+            const initialDetailsMap = new Map(
+              initialDetails.map((detail) => [detail.report_id, detail])
+            );
+  
+            // Merge reports with their initial details
+            const localReportsWithDetails = reports.map((report) => ({
+              ...report,
+              initial_details: initialDetailsMap.get(report.id) || null
+            }));
+            console.log('Local reports with details:', localReportsWithDetails);
+            return localReportsWithDetails;
+          }),
           switchMap((localReports) =>
             this.http.get<ApiResponse<Report[]>>(this.apiUrl).pipe(
               map((remoteReports) => {
                 const mergedReports: Report[] = [];
-
+  
                 // Create a Map of remote reports for quick access
                 const remoteMap = new Map(
                   remoteReports.data.data.map((r) => [r.id, r])
                 );
-
+  
                 const localIds = new Set(localReports.map((r) => r.id));
-
+  
                 // Merge or resolve conflicts
                 localReports.forEach((local) => {
                   const remote = remoteMap.get(local.id);
@@ -189,17 +210,17 @@ export class ReportsService {
                     mergedReports.push(
                       localDate >= remoteDate ? local : remote
                     );
-
+  
                     // Remove from map to avoid re-processing
                     remoteMap.delete(local.id);
                   }
                 });
-
+  
                 // Add remaining remote reports (not in local)
                 for (const remaining of remoteMap.values()) {
                   mergedReports.push(remaining);
                 }
-
+                console.log('Merged reports:', mergedReports);
                 return mergedReports;
               }),
               catchError((error) => {
@@ -207,7 +228,7 @@ export class ReportsService {
                   `Backend fetch failed. Showing local reports only`
                 );
                 console.error({ error });
-                return of(localReports); // fallback to local
+                return of(localReports); // fallback to local with initial details
               })
             )
           )
@@ -219,6 +240,67 @@ export class ReportsService {
       })
     );
   }
+
+  // getAllReports(): Observable<Report[]> {
+  //   return from(this.databaseService.db).pipe(
+  //     switchMap((db) =>
+  //       from(db['reports'].find().exec()).pipe(
+  //         map((docs) => docs.map((doc) => doc.toJSON())),
+  //         switchMap((localReports) =>
+  //           this.http.get<ApiResponse<Report[]>>(this.apiUrl).pipe(
+  //             map((remoteReports) => {
+  //               const mergedReports: Report[] = [];
+
+  //               // Create a Map of remote reports for quick access
+  //               const remoteMap = new Map(
+  //                 remoteReports.data.data.map((r) => [r.id, r])
+  //               );
+
+  //               const localIds = new Set(localReports.map((r) => r.id));
+
+  //               // Merge or resolve conflicts
+  //               localReports.forEach((local) => {
+  //                 const remote = remoteMap.get(local.id);
+  //                 if (!remote) {
+  //                   // unsynced local report
+  //                   mergedReports.push(local);
+  //                 } else {
+  //                   // Resolve conflict by updated_at
+  //                   const localDate = new Date(local.updated_at).getTime();
+  //                   const remoteDate = new Date(remote.updated_at).getTime();
+  //                   mergedReports.push(
+  //                     localDate >= remoteDate ? local : remote
+  //                   );
+
+  //                   // Remove from map to avoid re-processing
+  //                   remoteMap.delete(local.id);
+  //                 }
+  //               });
+
+  //               // Add remaining remote reports (not in local)
+  //               for (const remaining of remoteMap.values()) {
+  //                 mergedReports.push(remaining);
+  //               }
+
+  //               return mergedReports;
+  //             }),
+  //             catchError((error) => {
+  //               console.warn(
+  //                 `Backend fetch failed. Showing local reports only`
+  //               );
+  //               console.error({ error });
+  //               return of(localReports); // fallback to local
+  //             })
+  //           )
+  //         )
+  //       )
+  //     ),
+  //     catchError((error) => {
+  //       console.error('Failed to get all reports from local DB:', error);
+  //       return throwError(() => error);
+  //     })
+  //   );
+  // }
 
   /**
    * Get all unsynced reports

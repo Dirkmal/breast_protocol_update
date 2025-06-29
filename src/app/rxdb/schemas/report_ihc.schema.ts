@@ -10,7 +10,8 @@ export const reportIhcSchema = {
     oestrogen_receptor_status: { type: 'string' },
     pr: { type: 'string' },
     her2: { type: 'string' },
-    quick_allred_score: { type: 'number' },
+    or_quick_allred_score: { type: 'number' },
+    pr_quick_allred_score: { type: 'number' },
     updated_at: { type: 'string' },
     created_at: { type: 'string' },
   },
@@ -20,6 +21,7 @@ export const reportIhcSchema = {
     'oestrogen_receptor_status',
     'pr',
     'her2',
-    'quick_allred_score',
+    'or_quick_allred_score',
+    'pr_quick_allred_score',
   ],
 };

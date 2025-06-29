@@ -386,13 +386,19 @@ export class ReportFormComponent implements OnInit {
       options: this.ihc_options,
     }),
     new DynamicControl({
+      name: 'or_quick_allred_score',
+      label: 'OR Quick Allred Score',
+      controlType: ControlTypes.NUMBER,
+    }),
+    new DynamicControl({
       name: 'pr',
       label: 'Progesterone Receptor',
       controlType: ControlTypes.SELECT,
       options: this.ihc_options,
     }),
     new DynamicControl({
-      name: 'quick_allred_score',
+      name: 'pr_quick_allred_score',
+      label: 'PR Quick Allred Score',
       controlType: ControlTypes.NUMBER,
     }),
     new DynamicControl({
@@ -547,7 +553,7 @@ export class ReportFormComponent implements OnInit {
       created_at: this.report?.created_at ?? timestamp,
       updated_at: this.report?.updated_at ?? timestamp,
     };
-
+    console.log('Report data to save:', data);
     this.ds.createReport(data).subscribe({
       next: (savedReport) => {
         // console.log('Report saved successfully', savedReport);
@@ -576,15 +582,23 @@ export class ReportFormComponent implements OnInit {
   }
 
   private formatDateToDDMMYYYY(date?: Date | string | number): string {
-    const options = {
-      day: '2-digit' as const,
-      month: '2-digit' as const,
-      year: 'numeric' as const,
-    };
-
+    // const options: Intl.DateTimeFormatOptions = {
+    //   day: '2-digit',
+    //   month: '2-digit',
+    //   year: 'numeric',
+    // };
+  
+    // const value = date ?? new Date();
+    
+    // return new Date(value).toLocaleDateString('en-GB', options);
     const value = date ?? new Date();
-
-    return new Date(value).toLocaleDateString('en', options);
+    const d = new Date(value);
+    
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
   }
 
   // private markFormGroupTouched(formGroup: FormGroup): void {

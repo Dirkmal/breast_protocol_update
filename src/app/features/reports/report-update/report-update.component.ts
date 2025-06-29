@@ -191,7 +191,8 @@ export class ReportUpdateComponent implements OnInit {
         oestrogen_receptor_status: ['', Validators.required],
         pr: ['', Validators.required],
         her2: ['', Validators.required],
-        quick_allred_score: [0, [Validators.required, Validators.min(0), Validators.max(8)]]
+        or_quick_allred_score: [0, [Validators.required, Validators.min(0), Validators.max(8)]],
+        pr_quick_allred_score: [0, [Validators.required, Validators.min(0), Validators.max(8)]]
       }),
 
       // Pathologist Report
