@@ -39,7 +39,9 @@ export class DatabaseService {
 
   private conflictHandler = {
     isEqual(a: any, b: any) {
-      return a.updated_at === b.updated_at;
+      return (
+        new Date(a.updated_at).getTime() === new Date(b.updated_at).getTime()
+      );
     },
 
     resolve({
@@ -49,8 +51,8 @@ export class DatabaseService {
       realMasterState: any;
       newDocumentState: any;
     }) {
-      const realUpdated = realMasterState?.updated_at || new Date();
-      const newUpdated = newDocumentState?.updated_at || new Date();
+      const realUpdated = realMasterState?.updated_at ?? new Date();
+      const newUpdated = newDocumentState?.updated_at ?? new Date();
 
       return new Date(realUpdated).getTime() >= new Date(newUpdated).getTime()
         ? realMasterState
