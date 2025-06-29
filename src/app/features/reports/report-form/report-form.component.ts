@@ -1,3 +1,5 @@
+import { v4 as uuidV4 } from 'uuid';
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -5,7 +7,6 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -85,8 +86,14 @@ export class ReportFormComponent implements OnInit {
   // patients: Option[] = [{ value: '1', viewValue: 'Kamaldeen Samaila' }];
   // hospitals: Option[] = [{ value: '1', viewValue: 'Kamal Hospital' }];
   histologic_types: Option[] = [
-    { value: 'Invasive Ductal Carcinoma', viewValue: 'Invasive Ductal Carcinoma' },
-    { value: 'Invasive Lobular Carcinoma', viewValue: 'Invasive Lobular Carcinoma' },
+    {
+      value: 'Invasive Ductal Carcinoma',
+      viewValue: 'Invasive Ductal Carcinoma',
+    },
+    {
+      value: 'Invasive Lobular Carcinoma',
+      viewValue: 'Invasive Lobular Carcinoma',
+    },
     { value: 'Tubular Carcinoma', viewValue: 'Tubular Carcinoma' },
     { value: 'Mucinous Carcinoma', viewValue: 'Mucinous Carcinoma' },
     { value: 'Papillary Carcinoma', viewValue: 'Papillary Carcinoma' },
@@ -99,7 +106,7 @@ export class ReportFormComponent implements OnInit {
     new DynamicControl({
       label: 'Patient Name',
       name: 'patient_id',
-      required: true
+      required: true,
     }),
     new DynamicControl({
       name: 'hospital_number',
@@ -394,7 +401,6 @@ export class ReportFormComponent implements OnInit {
       controlType: ControlTypes.SELECT,
       options: this.ihc_options,
     }),
-    
   ];
 
   /** Pathologist report **/
@@ -507,8 +513,11 @@ export class ReportFormComponent implements OnInit {
   saveReport() {
     this.setReportValues();
 
+    const timestamp = new Date().toISOString();
+
     const data: Report = {
       ...this.report,
+      id: this.report?.id ?? uuidV4(),
       initial_details: {
         ...this.report.initial_details,
         reporting_date: this.formatDateToDDMMYYYY(
@@ -527,6 +536,8 @@ export class ReportFormComponent implements OnInit {
           this.report.pathologist_report.date_reviewed
         ),
       },
+      created_at: this.report?.created_at ?? timestamp,
+      updated_at: this.report?.updated_at ?? timestamp,
     };
 
     this.ds.createReport(data).subscribe({

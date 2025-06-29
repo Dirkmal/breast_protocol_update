@@ -1,10 +1,10 @@
 import { Observable, forkJoin, from, of, throwError } from 'rxjs';
 import { catchError, map, retry, switchMap, tap } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { environment } from '../../../environments/environment';
 import { DatabaseService } from '../../rxdb/rxdb.service';
 import {
   IHC,
@@ -15,7 +15,6 @@ import {
   Report,
   SurgicalMargins,
 } from '../models/report.model';
-import { environment } from '../../../environments/environment';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -45,33 +44,24 @@ export class ReportsService {
   /**
    * Create a new report - save locally first, then sync to backend
    */
-  createReport(
-    report: Omit<Report, 'id' | 'created_at' | 'updated_at'>
-  ): Observable<string> {
-    const id = uuidv4();
-    const timestamp = new Date().toISOString();
-
-    const reportData: Report = {
-      ...report,
-      id,
-      created_at: timestamp,
-      updated_at: timestamp,
-    };
-
-    return from(this.saveReportLocally(this.serializeReport(reportData))).pipe(
+  createReport(report: Report): Observable<string> {
+    return from(this.saveReportLocally(this.serializeReport(report))).pipe(
       switchMap(() => {
         // Attempt to sync to backend
-        return this.syncReportToBackend(reportData).pipe(
-          tap(() => this.markReportAsSynced(id)),
+        return this.syncReportToBackend(report).pipe(
+          tap(() => this.markReportAsSynced(report.id)),
           catchError((error) => {
-            console.warn(`Failed to sync report ${id} to backend:`, error);
-            this.markReportSyncFailed(id);
+            console.warn(
+              `Failed to sync report ${report.id} to backend:`,
+              error
+            );
+            this.markReportSyncFailed(report.id);
             // Don't throw error - report is saved locally
-            return of(id);
+            return of(report.id);
           })
         );
       }),
-      map(() => id),
+      map(() => report.id),
       catchError((error) => {
         console.error('Failed to create report:', error);
         return throwError(() => error);
@@ -101,7 +91,7 @@ export class ReportsService {
         //       // You may want to handle this more gracefully
         //       throw new Error("Backend report not found");
         //     }
-  
+
         //     // Save report locally and return the backendReport
         //     return from(this.saveReportLocally(backendReport, true)).pipe(
         //       map(() => backendReport)
@@ -315,79 +305,79 @@ export class ReportsService {
     };
 
     await Promise.all([
-      await db['reports'].insert({
+      await db['reports'].upsert({
         id: report.id,
         rev: report._rev,
         patient_id: report.initial_details.patient_id,
         ...dates,
       }),
-      await db['report_axillary_node'].insert({
+      await db['report_axillary_node'].upsert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.axillary_node,
         ...dates,
       }),
-      await db['report_axillary_procedure'].insert({
+      await db['report_axillary_procedure'].upsert({
         id: '1',
         report_id: report.id,
         ...report.macroscopy.axillary_procedure,
         ...dates,
       }),
-      await db['report_ihc'].insert({
+      await db['report_ihc'].upsert({
         id: '1',
         report_id: report.id,
         ...report.ihc,
         ...dates,
       }),
-      await db['report_in_situ_carcinoma'].insert({
+      await db['report_in_situ_carcinoma'].upsert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.in_situ_carcinoma,
         ...dates,
       }),
-      await db['report_initial_details'].insert({
+      await db['report_initial_details'].upsert({
         id: '1',
         report_id: report.id,
         ...report.initial_details,
         ...dates,
       }),
-      await db['report_invasive_carcinoma'].insert({
+      await db['report_invasive_carcinoma'].upsert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.invasive_carcinoma,
         ...dates,
       }),
-      await db['report_margins'].insert({
+      await db['report_margins'].upsert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.margin,
         ...dates,
       }),
-      await db['report_other_margins'].insert({
+      await db['report_other_margins'].upsert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.surgical_margins_actual,
         ...dates,
       }),
-      await db['report_pathological_staging'].insert({
+      await db['report_pathological_staging'].upsert({
         id: '1',
         report_id: report.id,
         ...report.microscopy.pathological_staging,
         ...dates,
       }),
-      await db['report_pathologist_report'].insert({
+      await db['report_pathologist_report'].upsert({
         id: '1',
         report_id: report.id,
         ...report.pathologist_report,
         ...dates,
       }),
-      await db['report_specimen_dimensions'].insert({
+      await db['report_specimen_dimensions'].upsert({
         id: '1',
         report_id: report.id,
         ...report.macroscopy.specimen_dimensions,
         ...dates,
       }),
-      await db['report_specimen_type'].insert({
+      await db['report_specimen_type'].upsert({
         id: '1',
         report_id: report.id,
         ...report.macroscopy.specimen_type,
@@ -495,7 +485,7 @@ export class ReportsService {
   getReportFromBackend(id: string): Observable<Report> {
     return this.http.get<ApiResponse<Report>>(`${this.apiUrl}/${id}`).pipe(
       retry(1),
-      map((response) => {        
+      map((response) => {
         if (response.success && response.data) {
           // return this.transformDatesFromApi(response.data.data);
           console.log('Report from backend:', response.data);
