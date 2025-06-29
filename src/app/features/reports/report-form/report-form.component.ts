@@ -490,6 +490,14 @@ export class ReportFormComponent implements OnInit {
     );
   }
 
+  resetForms(): void {
+    this.detailsForm.reset();
+    this.macroscopyForm.reset();
+    this.microscopyForm.reset();
+    this.ihcForm.reset();
+    this.pathologistForm.reset();
+  }
+
   get specimenTypesFormArray(): FormArray {
     return this.macroscopyForm.get('specimenTypes') as FormArray;
   }
@@ -536,7 +544,7 @@ export class ReportFormComponent implements OnInit {
           duration: 5000,
         });
         this.report = new Report(); // Reset the report after saving
-        this.initForms(); // Reinitialize forms to clear input fields
+        this.resetForms(); // Reinitialize forms to clear input fields
         this.currentStep = 0; // Reset to the first step
       },
       error: (err) => {
