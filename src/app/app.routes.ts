@@ -15,6 +15,11 @@ export const routes: Routes = [
     title: 'Overview',
   },
   {
+    path: '',
+    component: ReportListComponent,
+    title: 'Reports',
+  },
+  {
     path: 'patient/list',
     component: PatientListComponent,
     title: 'Patient List',
