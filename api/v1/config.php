@@ -35,7 +35,7 @@ if (file_exists($envFilePath)) {
 define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1'); // Default to localhost if not set
 define('DB_USER', getenv('DB_USER') ?: 'root'); // Default to root if not set
 define('DB_PASS', getenv('DB_PASS') ?: ''); // Default to an empty password if not set
-define('DB_NAME', getenv('DB_NAME') ?: 'breastcancer_registry'); // Default database name if not set
+define('DB_NAME', getenv('DB_NAME') ?: 'breast_cancer_registry'); // Default database name if not set
 // define('EMAIL_TO', getenv('EMAIL_TO') ?: 'info@cancerregistry.com'); // Email address to send mail
 
 // Ensure this file is not accessible directly

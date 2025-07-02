@@ -9,11 +9,11 @@ import { SettingsComponent } from './features/settings/settings.component';
 import { ReportUpdateComponent } from './features/reports/report-update/report-update.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: OverviewComponent,
-    title: 'Overview',
-  },
+  // {
+  //   path: '',
+  //   component: OverviewComponent,
+  //   title: 'Overview',
+  // },
   {
     path: '',
     component: ReportListComponent,
