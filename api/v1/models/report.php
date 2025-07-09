@@ -200,12 +200,13 @@ class Report
     $report = $data["pathologist_report"];
 
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathologist_report (report_id, final_diagnosis, comment, consultant_pathologist, date_of_request, date_received, date_reviewed) VALUES (:report_id, :final_diagnosis, :comment, :consultant_pathologist, :date_of_request, :date_received, :date_reviewed)");
+      $stmt = $this->pdo->prepare("INSERT INTO $this->report_pathologist_report (report_id, final_diagnosis, comment, resident, consultant_pathologist, date_of_request, date_received, date_reviewed) VALUES (:report_id, :final_diagnosis, :comment, :resident, :consultant_pathologist, :date_of_request, :date_received, :date_reviewed)");
 
       $stmt->execute([
         ':report_id' => $reportId,
         ':final_diagnosis' => $report['final_diagnosis'] ?? "",
         ':comment' => $report['comment'] ?? "",
+        ':resident' => $report['resident'] ?? "",
         ':consultant_pathologist' => $report['consultant_pathologist'] ?? "",
         ':date_of_request' => $report['date_of_request'] ?? "",
         ':date_received' => $report['date_received'] ?? "",

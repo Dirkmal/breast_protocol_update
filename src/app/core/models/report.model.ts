@@ -104,6 +104,7 @@ export interface IHC {
 export interface PathologistReport {
   final_diagnosis: string;
   comment: string;
+  resident: string;
   consultant_pathologist: string;
   date_of_request: string;
   date_received: string;

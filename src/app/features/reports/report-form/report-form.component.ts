@@ -83,8 +83,6 @@ export class ReportFormComponent implements OnInit {
   margins: string[] = Object.values(SurgicalMargins);
   ihc_options: string[] = Object.values(IHCStatus);
 
-  // patients: Option[] = [{ value: '1', viewValue: 'Kamaldeen Samaila' }];
-  // hospitals: Option[] = [{ value: '1', viewValue: 'Kamal Hospital' }];
   histologic_types: Option[] = [
     {
       value: 'Invasive Ductal Carcinoma',
@@ -387,7 +385,7 @@ export class ReportFormComponent implements OnInit {
     }),
     new DynamicControl({
       name: 'or_quick_allred_score',
-      label: 'OR Quick Allred Score',
+      label: 'Quick Allred Score (Oestrogen Receptor)',
       controlType: ControlTypes.NUMBER,
     }),
     new DynamicControl({
@@ -398,7 +396,7 @@ export class ReportFormComponent implements OnInit {
     }),
     new DynamicControl({
       name: 'pr_quick_allred_score',
-      label: 'PR Quick Allred Score',
+      label: 'Quick Allred Score (Progesterone Receptor)',
       controlType: ControlTypes.NUMBER,
     }),
     new DynamicControl({
@@ -421,6 +419,10 @@ export class ReportFormComponent implements OnInit {
       name: 'comment',
       required: true,
       controlType: ControlTypes.TEXTAREA,
+    }),
+    new DynamicControl({
+      name: 'resident',
+      required: true
     }),
     new DynamicControl({ name: 'consultant_pathologist', required: true }),
     new DynamicControl({

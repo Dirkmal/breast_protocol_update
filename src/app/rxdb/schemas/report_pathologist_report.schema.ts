@@ -9,6 +9,7 @@ export const reportPathologistReportSchema = {
     report_id: { type: 'string', maxLength: 36 },
     final_diagnosis: { type: 'string' },
     comment: { type: 'string' },
+    resident: { type: 'string', maxLength: 255 },
     consultant_pathologist: { type: 'string', maxLength: 255 },
     date_of_request: { type: 'string' },
     date_received: { type: 'string' },
