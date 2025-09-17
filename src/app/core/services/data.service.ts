@@ -570,7 +570,7 @@ export class ReportsService {
       map((response) => {
         if (response.success && response.data) {
           // return this.transformDatesFromApi(response.data.data);
-          console.log('Report from backend:', response.data);
+          // console.log('Report from backend:', response.data);
           return response.data.data;
         }
         throw new Error(response?.error || 'Report not found');

@@ -7,6 +7,7 @@ import { ReportFormComponent } from './features/reports/report-form/report-form.
 import { ReportListComponent } from './features/reports/report-list/report-list.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { ReportUpdateComponent } from './features/reports/report-update/report-update.component';
+import { ReportUpdateAltComponent } from './features/report-update-alt/report-update-alt.component';
 
 export const routes: Routes = [
   // {
@@ -39,8 +40,12 @@ export const routes: Routes = [
     component: ReportFormComponent,
     title: 'New Report',
   },
+  // { path: 'reports/update/:id', 
+  //   component: ReportUpdateComponent, 
+  //   title: 'Update Report'
+  // },
   { path: 'reports/update/:id', 
-    component: ReportUpdateComponent, 
+    component: ReportUpdateAltComponent, 
     title: 'Update Report'
   },
   {
